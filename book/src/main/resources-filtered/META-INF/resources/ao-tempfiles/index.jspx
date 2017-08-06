@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ao-tempfiles - Java temporary file API filling-in JDK gaps and deficiencies.
+Copyright (C) 2017  AO Industries, Inc.
+    support@aoindustries.com
+    7262 Bull Pen Cir
+    Mobile, AL 36695
+
+This file is part of ao-tempfiles.
+
+ao-tempfiles is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+ao-tempfiles is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with ao-tempfiles.  If not, see <http://www.gnu.org/licenses />.
+-->
+<jsp:root
+	xmlns:ao="https://aoindustries.com/ao-taglib/"
+	xmlns:core="https://semanticcms.com/core/taglib/"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:section="https://semanticcms.com/section/taglib/"
+	version="2.1"
+>
+	<jsp:directive.page language="java" pageEncoding="UTF-8" session="false" />
+	<core:page
+		title="@{documented.name}"
+		description="@{documented.description}"
+		datePublished="2017-08-06T17:54:05-0500"
+	>
+		<core:child page="changelog.jspx" />
+		<core:child page="apidocs/index.jspx" />
+		<ao:include
+			page="/ao-badges/badges.inc.jspx"
+			arg.projectStatus="${currentPage.property.projectStatus}"
+			arg.managementStatus="${currentPage.property.managementStatus}"
+			arg.packagingStatus="${currentPage.property.packagingStatus}"
+			arg.javaVersion="${currentPage.property.javaVersion}"
+			arg.semanticVersioning="${currentPage.property.semanticVersioning}"
+			arg.license="${currentPage.property.license}"
+		/>
+		<p>
+			@{documented.description}
+		</p>
+		<section:section label="Project Links">
+			<ul>
+				<li><core:link page="index.jspx">Project Home</core:link></li>
+				<li><core:link page="changelog.jspx">Changelog</core:link></li>
+				<li><core:link page="apidocs/index.jspx">API Docs</core:link></li>
+				<li><ao:a href="https://search.maven.org/#search%7Cgav%7C1%7Cg:%22@{documented.groupId}%22%20AND%20a:%22@{documented.artifactId}%22">Maven Central Repository</ao:a></li>
+				<li><ao:a href="@{documented.scm.url}">GitHub</ao:a></li>
+			</ul>
+		</section:section>
+		<section:section label="Features">
+			<ul>
+				<li>Small and simple API for dealing with temporary files.</li>
+				<li>Small footprint, self-contained, no transitive dependencies - not part of a big monolithic package.</li>
+				<li>Java 1.6 implementation:
+					<ul>
+						<li>Android compatible.</li>
+						<li>Java EE 6+ compatible.</li>
+					</ul>
+				</li>
+			</ul>
+		</section:section>
+		<section:section label="Motivation">
+			<p>
+				The Java language has a long-term and <ao:a href="https://stackoverflow.com/questions/40119188/memory-leak-on-deleteonexithook">well-documented</ao:a>
+				memory leak when using <ao:a rel="nofollow" href="https://docs.oracle.com/javase/6/docs/api/java/io/File.html#deleteOnExit()">File.deleteOnExit()</ao:a>.
+				The <ao:a href="https://bugs.openjdk.java.net/browse/JDK-4872014">bug report</ao:a> has been open for 14 years as of the time of this writing.
+			</p>
+			<p>
+				We desire to not have to choose between a memory leak and garbage files possibly left behind on shutdown, thus this API was born.
+			</p>
+		</section:section>
+		<section:section label="Alternatives">
+			<p>
+				There may be functionality that is also found in other projects.  Please let us know if you find a small, clean, focused alternative.
+				We always love to cure ignorance - especially our own.
+			</p>
+		</section:section>
+	</core:page>
+</jsp:root>
