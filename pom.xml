@@ -36,6 +36,15 @@ along with ao-tempfiles.  If not, see <http://www.gnu.org/licenses />.
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
+	<properties>
+		<javadoc.modules><![CDATA[<div style="float:left; margin: 0 1em">
+			<h2 style="margin-top: 0em">Modules</h2>
+			<ul>
+				<li><a target="_top" href="https://aoindustries.com/ao-tempfiles/servlet/">AO TempFiles Servlet</a></li>
+			</ul>
+		</div>]]></javadoc.modules>
+	</properties>
+
 	<name>AO TempFiles</name>
 	<url>https://aoindustries.com/${project.artifactId}/</url>
 	<description>Java temporary file API filling-in JDK gaps and deficiencies.</description>
