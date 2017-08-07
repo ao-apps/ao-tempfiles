@@ -44,7 +44,7 @@ import java.util.logging.Logger;
  * Thread-safe with fine-grained locking.
  * </p>
  */
-public class TempFileContext implements Closeable /* TODO: Java 1.7: AutoCloseable */ {
+public class TempFileContext implements Closeable {
 
 	private static final Logger logger = Logger.getLogger(TempFileContext.class.getName());
 

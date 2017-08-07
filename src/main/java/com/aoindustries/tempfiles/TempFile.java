@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * Thread-safe with fine-grained locking.
  * </p>
  */
-public class TempFile implements Closeable /* TODO: Java 1.7: AutoCloseable */ {
+public class TempFile implements Closeable {
 
 	private final Long contextId;
 
