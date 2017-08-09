@@ -246,6 +246,20 @@ public class TempFileContext implements Closeable {
 	}
 
 	/**
+	 * Gets the number of files that are currently scheduled to be deleted on close/exit.
+	 */
+	public int getSize() {
+		DeleteOnExistsEntry entry = deleteOnExits.get(id);
+		if(entry != null) {
+			synchronized(entry.deleteSet) {
+				return entry.deleteSet.size();
+			}
+		} else {
+			return 0;
+		}
+	}
+
+	/**
 	 * <p>
 	 * Closes this instance.  Once closed, no additional temp files may be managed.
 	 * Any overriding method must call super.close().
