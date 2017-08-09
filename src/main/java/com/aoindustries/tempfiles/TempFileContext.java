@@ -25,13 +25,16 @@ package com.aoindustries.tempfiles;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -54,18 +57,6 @@ public class TempFileContext implements Closeable {
 	private static final AtomicInteger activeCount = new AtomicInteger();
 
 	/**
-	 * The deleteOnExits value.
-	 */
-	private static class DeleteOnExistsEntry {
-		private final File tmpDir;
-		private final Set<String> deleteSet = new LinkedHashSet<String>();
-
-		private DeleteOnExistsEntry(File tmpDir) {
-			this.tmpDir = tmpDir;
-		}
-	}
-
-	/**
 	 * The files registered for delete on exit.
 	 * <p>
 	 * Note: The key is an incrementing Long to avoid a reference to the specific instance.
@@ -73,7 +64,7 @@ public class TempFileContext implements Closeable {
 	 * when API users are reckless.
 	 * </p>
 	 */
-	private static final ConcurrentMap<Long, DeleteOnExistsEntry> deleteOnExits = new ConcurrentHashMap<Long, DeleteOnExistsEntry>();
+	private static final ConcurrentMap<Long, Map<String,File>> deleteOnExits = new ConcurrentHashMap<Long, Map<String,File>>();
 
 	/**
 	 * The shutdown hook shared by all active instances.
@@ -113,10 +104,12 @@ public class TempFileContext implements Closeable {
 	 * @see  #close()
 	 */
 	public TempFileContext(File tmpDir) {
-		if(!tmpDir.exists()) throw new IllegalArgumentException("tmpDir does not exist: " + tmpDir);
-		if(!tmpDir.isDirectory()) throw new IllegalArgumentException("tmpDir is not a directory: " + tmpDir);
-		if(!tmpDir.canWrite()) throw new IllegalArgumentException("tmpDir is not writable: " + tmpDir);
-		if(!tmpDir.canRead()) throw new IllegalArgumentException("tmpDir is not readable: " + tmpDir);
+		// Not worth the overhead to check here, since some contexts are very short-lived
+		// and any problems will manifest themselves clearly when creating a temporary file.
+		// if(!tmpDir.exists()) throw new IllegalArgumentException("tmpDir does not exist: " + tmpDir);
+		// if(!tmpDir.isDirectory()) throw new IllegalArgumentException("tmpDir is not a directory: " + tmpDir);
+		// if(!tmpDir.canWrite()) throw new IllegalArgumentException("tmpDir is not writable: " + tmpDir);
+		// if(!tmpDir.canRead()) throw new IllegalArgumentException("tmpDir is not readable: " + tmpDir);
 		this.tmpDir = tmpDir;
 		// Increment activeCount while looking for wraparound
 		assert activeCount.get() >= 0;
@@ -132,11 +125,9 @@ public class TempFileContext implements Closeable {
 			shutdownHook = new Thread() {
 				@Override
 				public void run() {
-					for(DeleteOnExistsEntry entry : deleteOnExits.values()) {
-						File tmpDir = entry.tmpDir;
-						synchronized(entry.deleteSet) {
-							for(String delete : entry.deleteSet) {
-								File file = new File(tmpDir, delete);
+					for(Map<String,File> deleteMap : deleteOnExits.values()) {
+						synchronized(deleteMap) {
+							for(File file : deleteMap.values()) {
 								if(file.exists() && !file.delete()) {
 									if(logger.isLoggable(Level.WARNING)) logger.log(Level.WARNING, "Unable to delete file on shutdown: {0}", file);
 								}
@@ -160,19 +151,33 @@ public class TempFileContext implements Closeable {
 	/**
 	 * Uses the provided temporary directory.
 	 *
-	 * @see  #TempFiles(java.io.File)
+	 * @see  #TempFileContext(java.io.File)
 	 */
 	public TempFileContext(String tmpDir) {
+		// TODO: How expensive is new File with its normalization?
+		//       Would it be worth a ConcurrentMap to avoid this?
 		this(new File(tmpDir));
+	}
+
+	private static final AtomicReference<File> systemTmpDir = new AtomicReference<File>();
+	private static File getSystemTmpDir() {
+		File tmpDir = systemTmpDir.get();
+		if(tmpDir == null) {
+			tmpDir = new File(System.getProperty("java.io.tmpdir"));
+			File existing = systemTmpDir.getAndSet(tmpDir);
+			if(existing != null) tmpDir = existing;
+		}
+		return tmpDir;
 	}
 
 	/**
 	 * Uses the system default temporary directory from {@link System#getProperty(java.lang.String) system property} {@code "java.io.tmpdir"}.
 	 *
-	 * @see  #TempFiles(java.lang.String)
+	 * @see  #getSystemTmpDir()
+	 * @see  #TempFileContext(java.io.File)
 	 */
 	public TempFileContext() {
-		this(System.getProperty("java.io.tmpdir"));
+		this(getSystemTmpDir());
 	}
 
 	/**
@@ -202,14 +207,14 @@ public class TempFileContext implements Closeable {
 		}
 		File tmpFile = File.createTempFile(prefix, suffix, tmpDir);
 		// Add to delete-on-exit
-		DeleteOnExistsEntry entry = deleteOnExits.get(id);
-		if(entry == null) {
-			entry = new DeleteOnExistsEntry(tmpDir);
-			DeleteOnExistsEntry existing = deleteOnExits.putIfAbsent(id, entry);
-			if(existing != null) entry = existing;
+		Map<String,File> deleteMap = deleteOnExits.get(id);
+		if(deleteMap == null) {
+			deleteMap = new LinkedHashMap<String,File>();
+			Map<String,File> existing = deleteOnExits.putIfAbsent(id, deleteMap);
+			if(existing != null) deleteMap = existing;
 		}
-		synchronized(entry.deleteSet) {
-			if(!entry.deleteSet.add(tmpFile.getName())) throw new IOException("Duplicate temp filename: " + tmpFile);
+		synchronized(deleteMap) {
+			if(deleteMap.put(tmpFile.getName(), tmpFile) != null) throw new IOException("Duplicate temp filename: " + tmpFile);
 		}
 		// Return temp file
 		return new TempFile(id, tmpFile);
@@ -237,10 +242,10 @@ public class TempFileContext implements Closeable {
 	 * @see  TempFile#close()
 	 */
 	static void removeDeleteOnExit(Long id, String name) {
-		DeleteOnExistsEntry entry = deleteOnExits.get(id);
-		if(entry != null) {
-			synchronized(entry.deleteSet) {
-				entry.deleteSet.remove(name);
+		Map<String,File> deleteMap = deleteOnExits.get(id);
+		if(deleteMap != null) {
+			synchronized(deleteMap) {
+				deleteMap.remove(name);
 			}
 		}
 	}
@@ -249,10 +254,10 @@ public class TempFileContext implements Closeable {
 	 * Gets the number of files that are currently scheduled to be deleted on close/exit.
 	 */
 	public int getSize() {
-		DeleteOnExistsEntry entry = deleteOnExits.get(id);
-		if(entry != null) {
-			synchronized(entry.deleteSet) {
-				return entry.deleteSet.size();
+		Map<String,File> deleteMap = deleteOnExits.get(id);
+		if(deleteMap != null) {
+			synchronized(deleteMap) {
+				return deleteMap.size();
 			}
 		} else {
 			return 0;
@@ -275,7 +280,7 @@ public class TempFileContext implements Closeable {
 	public void close() throws IOException {
 		boolean alreadyClosed = closed.getAndSet(true);
 		if(!alreadyClosed) {
-			DeleteOnExistsEntry entry = deleteOnExits.remove(id);
+			Map<String,File> deleteMap = deleteOnExits.remove(id);
 			assert activeCount.get() > 0;
 			int newActiveCount = activeCount.decrementAndGet();
 			if(logger.isLoggable(Level.FINE)) logger.log(Level.FINE, "activeCount={0}", newActiveCount);
@@ -293,11 +298,10 @@ public class TempFileContext implements Closeable {
 				}
 			}
 			// Delete own temp files
-			if(entry != null) {
+			if(deleteMap != null) {
 				Set<File> failedDelete = null;
-				synchronized(entry.deleteSet) {
-					for(String delete : entry.deleteSet) {
-						File file = new File(tmpDir, delete);
+				synchronized(deleteMap) {
+					for(File file : deleteMap.values()) {
 						if(file.exists() && !file.delete()) {
 							if(failedDelete == null) failedDelete = new LinkedHashSet<File>();
 							failedDelete.add(file);

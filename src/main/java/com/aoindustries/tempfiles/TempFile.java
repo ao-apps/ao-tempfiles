@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * A temporary file that is deleted when {@link #close() closed} or when its
- * associated {@link TempFileContext} is {@link TempFiles#close() closed}.
+ * associated {@link TempFileContext} is {@link TempFileContext#close() closed}.
  * <p>
  * Thread-safe with fine-grained locking.
  * </p>
