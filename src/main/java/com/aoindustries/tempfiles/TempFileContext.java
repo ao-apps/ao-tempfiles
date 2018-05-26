@@ -1,6 +1,6 @@
 /*
  * ao-tempfiles - Java temporary file API filling-in JDK gaps and deficiencies.
- * Copyright (C) 2017  AO Industries, Inc.
+ * Copyright (C) 2017, 2018  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -292,7 +292,7 @@ public class TempFileContext implements Closeable {
 				try {
 					Runtime.getRuntime().removeShutdownHook(hook);
 				} catch(IllegalStateException e) {
-					if(logger.isLoggable(Level.WARNING)) logger.log(Level.WARNING, "Failed to removing shutdown hook", e);
+					// System shutting down, can't remove hook
 				} catch(SecurityException e) {
 					if(logger.isLoggable(Level.WARNING)) logger.log(Level.WARNING, "Failed to removing shutdown hook", e);
 				}
