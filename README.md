@@ -1,4 +1,4 @@
-# [<img src="ao-logo.png" alt="AO Logo" width="35" height="40">](https://aoindustries.com/) [AO TempFiles](https://aoindustries.com/ao-tempfiles/)
+# [<img src="ao-logo.png" alt="AO Logo" width="35" height="40">](https://github.com/aoindustries) [AO TempFiles](https://github.com/aoindustries/ao-tempfiles)
 <p>
 	<a href="https://aoindustries.com/life-cycle#project-alpha">
 		<img src="https://aoindustries.com/ao-badges/project-alpha.svg" alt="project: alpha" />
@@ -31,7 +31,7 @@ Java temporary file API filling-in JDK gaps and deficiencies.
 * [GitHub](https://github.com/aoindustries/ao-tempfiles)
 
 ## Modules
-* [AO TempFiles Servlet](https://aoindustries.com/ao-tempfiles/servlet/)
+* [AO TempFiles Servlet](https://github.com/aoindustries/ao-tempfiles-servlet)
 
 ## Features
 * Small and simple API for dealing with temporary files.
