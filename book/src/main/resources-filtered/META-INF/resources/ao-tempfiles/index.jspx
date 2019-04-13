@@ -36,7 +36,7 @@ along with ao-tempfiles.  If not, see <http://www.gnu.org/licenses />.
 		dateModified="2017-08-06T21:56:34-0500"
 	>
 		<core:child page="changelog.jspx" />
-		<core:child page="apidocs/" />
+		<core:child page="apidocs/index.jspx" />
 		<core:child book="/ao-tempfiles/servlet" page="/index.jspx" />
 		<ao:include
 			page="/ao-badges/badges.inc.jspx"
