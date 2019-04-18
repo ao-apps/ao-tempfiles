@@ -1,6 +1,6 @@
 /*
  * ao-tempfiles - Java temporary file API filling-in JDK gaps and deficiencies.
- * Copyright (C) 2017, 2018  AO Industries, Inc.
+ * Copyright (C) 2017, 2018, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -64,7 +64,7 @@ public class TempFileContext implements Closeable {
 	 * when API users are reckless.
 	 * </p>
 	 */
-	private static final ConcurrentMap<Long, Map<String,File>> deleteOnExits = new ConcurrentHashMap<Long, Map<String,File>>();
+	private static final ConcurrentMap<Long, Map<String,File>> deleteOnExits = new ConcurrentHashMap<>();
 
 	/**
 	 * The shutdown hook shared by all active instances.
@@ -138,11 +138,7 @@ public class TempFileContext implements Closeable {
 			};
 			try {
 				Runtime.getRuntime().addShutdownHook(shutdownHook);
-			} catch(IllegalArgumentException e) {
-				if(logger.isLoggable(Level.WARNING)) logger.log(Level.WARNING, "Failed to add shutdown hook", e);
-			} catch(IllegalStateException e) {
-				if(logger.isLoggable(Level.WARNING)) logger.log(Level.WARNING, "Failed to add shutdown hook", e);
-			} catch(SecurityException e) {
+			} catch(IllegalArgumentException | IllegalStateException | SecurityException e) {
 				if(logger.isLoggable(Level.WARNING)) logger.log(Level.WARNING, "Failed to add shutdown hook", e);
 			}
 		}
@@ -159,7 +155,7 @@ public class TempFileContext implements Closeable {
 		this(new File(tmpDir));
 	}
 
-	private static final AtomicReference<File> systemTmpDir = new AtomicReference<File>();
+	private static final AtomicReference<File> systemTmpDir = new AtomicReference<>();
 	private static File getSystemTmpDir() {
 		File tmpDir = systemTmpDir.get();
 		if(tmpDir == null) {
@@ -209,7 +205,7 @@ public class TempFileContext implements Closeable {
 		// Add to delete-on-exit
 		Map<String,File> deleteMap = deleteOnExits.get(id);
 		if(deleteMap == null) {
-			deleteMap = new LinkedHashMap<String,File>();
+			deleteMap = new LinkedHashMap<>();
 			Map<String,File> existing = deleteOnExits.putIfAbsent(id, deleteMap);
 			if(existing != null) deleteMap = existing;
 		}
@@ -303,7 +299,7 @@ public class TempFileContext implements Closeable {
 				synchronized(deleteMap) {
 					for(File file : deleteMap.values()) {
 						if(file.exists() && !file.delete()) {
-							if(failedDelete == null) failedDelete = new LinkedHashSet<File>();
+							if(failedDelete == null) failedDelete = new LinkedHashSet<>();
 							failedDelete.add(file);
 						}
 					}

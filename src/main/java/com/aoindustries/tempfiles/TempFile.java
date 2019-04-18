@@ -1,6 +1,6 @@
 /*
  * ao-tempfiles - Java temporary file API filling-in JDK gaps and deficiencies.
- * Copyright (C) 2017  AO Industries, Inc.
+ * Copyright (C) 2017, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -42,7 +42,7 @@ public class TempFile implements Closeable {
 
 	TempFile(Long contextId, File file) {
 		this.contextId = contextId;
-		this.file = new AtomicReference<File>(file);
+		this.file = new AtomicReference<>(file);
 	}
 
 	/**
