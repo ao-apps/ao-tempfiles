@@ -37,6 +37,7 @@ along with ao-tempfiles.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2017-08-06T17:54:05-0500"
+		dateModified="2019-04-18T05:05:35-0500"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-tempfiles:pom.version}" />
@@ -51,11 +52,20 @@ along with ao-tempfiles.  If not, see <http://www.gnu.org/licenses />.
 				groupId="@{documented.groupId}"
 				artifactId="@{documented.artifactId}"
 				scmUrl="@{documented.scm.url}"
-			>
-				<ul>
-					<li>New microproject for managing temp files.</li>
-				</ul>
-			</changelog:release>
+			/>
 		</c:if>
+
+		<changelog:release
+			projectName="@{documented.name}"
+			version="1.0.0"
+			datePublished="2019-04-18T05:05:35-0500"
+			groupId="@{documented.groupId}"
+			artifactId="@{documented.artifactId}"
+			scmUrl="@{documented.scm.url}"
+		>
+			<ul>
+				<li>New microproject for managing temp files.</li>
+			</ul>
+		</changelog:release>
 	</core:page>
 </jsp:root>
