@@ -33,7 +33,7 @@ along with ao-tempfiles.  If not, see <http://www.gnu.org/licenses />.
 		title="@{documented.name}"
 		description="@{documented.description}"
 		datePublished="2017-08-06T17:54:05-0500"
-		dateModified="2019-06-01T18:51:51-0500"
+		dateModified="2019-06-03T21:56:30-0500"
 	>
 		<core:child page="changelog.jspx" />
 		<core:child page="apidocs/index.jspx" />
@@ -81,7 +81,7 @@ along with ao-tempfiles.  If not, see <http://www.gnu.org/licenses />.
 		<section:section label="Motivation">
 			<p>
 				The Java language has a long-term and <ao:a href="https://stackoverflow.com/questions/40119188/memory-leak-on-deleteonexithook">well-documented</ao:a>
-				memory leak when using <ao:a rel="nofollow" href="https://docs.oracle.com/javase/6/docs/api/java/io/File.html#deleteOnExit()">File.deleteOnExit()</ao:a>.
+				memory leak when using <ao:a rel="nofollow" href="@{javac.link.javaApi}java/io/File.html#deleteOnExit()">File.deleteOnExit()</ao:a>.
 				The <ao:a href="https://bugs.openjdk.java.net/browse/JDK-4872014">bug report</ao:a> has been open for 14 years as of the time of this writing.
 			</p>
 			<p>
