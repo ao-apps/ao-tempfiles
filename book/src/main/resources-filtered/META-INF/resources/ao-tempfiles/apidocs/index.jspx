@@ -39,5 +39,4 @@ along with ao-tempfiles.  If not, see <http://www.gnu.org/licenses />.
 		datePublished="2017-08-06T17:54:05-0500"
 		dateModified="${ao:getLastModified('index.html')}"
 	/>
-	<!-- TODO: Pick-up javadocs version, not pom version, in title, here and elsewhere -->
 </jsp:root>
