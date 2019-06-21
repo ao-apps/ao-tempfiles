@@ -39,7 +39,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Provides a central temporary file manager use by any number of projects.
+ * Provides a central temporary file manager for use by any number of projects.
  * The temporary files are optionally deleted on shutdown using shutdown hooks.
  * The shutdown-registered temporary files are also immediately deleted when
  * the last instance is disposed.
