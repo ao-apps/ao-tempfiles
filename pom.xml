@@ -29,7 +29,7 @@ along with ao-tempfiles.  If not, see <http://www.gnu.org/licenses />.
 		<relativePath>../ao-oss-parent/pom.xml</relativePath>
 	</parent>
 
-	<groupId>com.aoindustries</groupId><artifactId>ao-tempfiles</artifactId><version>1.0.1-POST-SNAPSHOT</version>
+	<groupId>com.aoindustries</groupId><artifactId>ao-tempfiles</artifactId><version>1.0.2-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
 	<properties>
@@ -42,15 +42,15 @@ along with ao-tempfiles.  If not, see <http://www.gnu.org/licenses />.
 	</properties>
 
 	<name>AO TempFiles</name>
-	<url>https://aoindustries.com/${project.artifactId}/</url>
+	<url>https://aoindustries.com/ao-tempfiles/</url>
 	<description>Java temporary file API filling-in JDK gaps and deficiencies.</description>
 	<inceptionYear>2017</inceptionYear>
 
 	<scm>
 		<!-- Can't inherit due to multi-module -->
-		<connection>scm:git:git://github.com/aoindustries/${project.artifactId}.git</connection>
-		<developerConnection>scm:git:git@github.com:aoindustries/${project.artifactId}.git</developerConnection>
-		<url>https://github.com/aoindustries/${project.artifactId}</url>
+		<connection>scm:git:git://github.com/aoindustries/ao-tempfiles.git</connection>
+		<developerConnection>scm:git:git@github.com:aoindustries/ao-tempfiles.git</developerConnection>
+		<url>https://github.com/aoindustries/ao-tempfiles</url>
 		<tag>HEAD</tag>
 	</scm>
 </project>
