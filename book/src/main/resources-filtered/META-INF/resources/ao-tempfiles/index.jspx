@@ -45,7 +45,7 @@ along with ao-tempfiles.  If not, see <http://www.gnu.org/licenses />.
 				arg.projectStatus="current-stable"
 				arg.managementStatus="production"
 				arg.packagingStatus="active"
-				arg.javaVersion="@{documented.javaVersion}"
+				arg.javaseVersion="@{documented.javase.version}"
 				arg.semanticVersioning="2.0.0"
 				arg.license="lgpl-3.0"
 			/>
@@ -82,7 +82,7 @@ along with ao-tempfiles.  If not, see <http://www.gnu.org/licenses />.
 		<section:section label="Motivation">
 			<p>
 				The Java language has a long-term and <ao:a href="https://stackoverflow.com/questions/40119188/memory-leak-on-deleteonexithook">well-documented</ao:a>
-				memory leak when using <ao:a rel="nofollow" href="@{javac.link.javaApi}java/io/File.html#deleteOnExit()">File.deleteOnExit()</ao:a>.
+				memory leak when using <ao:a rel="nofollow" href="@{javadoc.link.javase}java/io/File.html#deleteOnExit()">File.deleteOnExit()</ao:a>.
 				The <ao:a href="https://bugs.openjdk.java.net/browse/JDK-4872014">bug report</ao:a> has been open for 14 years as of the time of this writing.
 			</p>
 			<p>
