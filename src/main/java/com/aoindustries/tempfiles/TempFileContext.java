@@ -1,6 +1,6 @@
 /*
  * ao-tempfiles - Java temporary file API filling-in JDK gaps and deficiencies.
- * Copyright (C) 2017, 2018, 2019  AO Industries, Inc.
+ * Copyright (C) 2017, 2018, 2019, 2020  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -118,7 +118,7 @@ public class TempFileContext implements Closeable {
 			activeCount.decrementAndGet();
 			throw new IllegalStateException("activeCount integer wraparound detected");
 		}
-		if(logger.isLoggable(Level.FINE)) logger.log(Level.FINE, "activeCount={0}", newActiveCount);
+		if(logger.isLoggable(Level.FINER)) logger.log(Level.FINER, "activeCount={0}", newActiveCount);
 		if(newActiveCount == 1) {
 			// Create shutdown hook on first only
 			if(logger.isLoggable(Level.FINE)) logger.log(Level.FINE, "Registering shutdown hook");
@@ -279,7 +279,7 @@ public class TempFileContext implements Closeable {
 			Map<String,File> deleteMap = deleteOnExits.remove(id);
 			assert activeCount.get() > 0;
 			int newActiveCount = activeCount.decrementAndGet();
-			if(logger.isLoggable(Level.FINE)) logger.log(Level.FINE, "activeCount={0}", newActiveCount);
+			if(logger.isLoggable(Level.FINER)) logger.log(Level.FINER, "activeCount={0}", newActiveCount);
 			if(newActiveCount == 0) {
 				Thread hook = shutdownHook;
 				assert hook != null;
