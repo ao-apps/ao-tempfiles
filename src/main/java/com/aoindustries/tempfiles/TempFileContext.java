@@ -322,7 +322,10 @@ public class TempFileContext implements Closeable {
 	/**
 	 * Do not rely on the finalizer - this is just in case something is way off
 	 * and the calling code doesn't correctly dispose their instances.
+	 *
+     * @deprecated The finalization mechanism is inherently problematic.
 	 */
+    @Deprecated // Java 9: (since="9")
 	@Override
 	protected void finalize() throws Throwable {
 		try {
