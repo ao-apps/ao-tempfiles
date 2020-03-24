@@ -34,7 +34,7 @@ along with ao-tempfiles.  If not, see <http://www.gnu.org/licenses />.
 		title="@{documented.name}"
 		description="@{documented.description}"
 		datePublished="2017-08-06T17:54:05-0500"
-		dateModified="2019-06-03T21:56:30-0500"
+		dateModified="2020-03-24T00:13:55-05:00"
 	>
 		<core:child page="changelog.jspx" />
 		<core:child page="apidocs/index.jspx" />
@@ -71,7 +71,7 @@ along with ao-tempfiles.  If not, see <http://www.gnu.org/licenses />.
 			<ul>
 				<li>Small and simple API for dealing with temporary files.</li>
 				<li>Small footprint, self-contained, no transitive dependencies - not part of a big monolithic package.</li>
-				<li>Java 1.7 implementation:
+				<li>Java 1.8 implementation:
 					<ul>
 						<li>Android compatible.</li>
 						<li>Java EE 6+ compatible.</li>
