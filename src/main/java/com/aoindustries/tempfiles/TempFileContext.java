@@ -150,8 +150,6 @@ public class TempFileContext implements Closeable {
 	 * @see  #TempFileContext(java.io.File)
 	 */
 	public TempFileContext(String tmpDir) {
-		// TODO: How expensive is new File with its normalization?
-		//       Would it be worth a ConcurrentMap to avoid this?
 		this(new File(tmpDir));
 	}
 
