@@ -53,4 +53,9 @@ along with ao-tempfiles.  If not, see <http://www.gnu.org/licenses />.
 		<url>https://github.com/aoindustries/ao-tempfiles</url>
 		<tag>HEAD</tag>
 	</scm>
+
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/aoindustries/ao-tempfiles/issues</url>
+	</issueManagement>
 </project>
