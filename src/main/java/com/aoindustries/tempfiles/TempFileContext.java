@@ -94,7 +94,7 @@ public class TempFileContext implements Closeable {
 	/**
 	 * <p>
 	 * Create a new instance of the temp file manager.  {@link #close()} must be called
-	 * when done with the instance.  This should be done in a try-finally or strong
+	 * when done with the instance.  This should be done in a try-with-resources, try-finally, or strong
 	 * equivalent, such as <code>Servlet.destroy()</code>.
 	 * </p>
 	 * <p>
