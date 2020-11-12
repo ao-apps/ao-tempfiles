@@ -42,7 +42,7 @@ import java.util.logging.Logger;
  * Provides a central temporary file manager for use by any number of projects.
  * The temporary files are optionally deleted on shutdown using shutdown hooks.
  * The shutdown-registered temporary files are also immediately deleted when
- * the last instance is disposed.
+ * the last instance is closed.
  * <p>
  * Thread-safe with fine-grained locking.
  * </p>
@@ -267,7 +267,7 @@ public class TempFileContext implements Closeable {
 	 * If this is the last active instance, the underlying shutdown hook is also removed.
 	 * </p>
 	 * <p>
-	 * If already disposed, no action will be taken and no exception thrown.
+	 * If already closed, no action will be taken and no exception thrown.
 	 * </p>
 	 */
 	@Override
@@ -319,7 +319,7 @@ public class TempFileContext implements Closeable {
 
 	/**
 	 * Do not rely on the finalizer - this is just in case something is way off
-	 * and the calling code doesn't correctly dispose their instances.
+	 * and the calling code doesn't correctly close their instances.
 	 *
      * @deprecated The finalization mechanism is inherently problematic.
 	 */
