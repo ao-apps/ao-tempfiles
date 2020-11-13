@@ -55,6 +55,11 @@ public class TempFileContext implements Closeable {
 	private static final Logger logger = Logger.getLogger(TempFileContext.class.getName());
 
 	/**
+	 * Any prefix longer than this will be truncated
+	 */
+	private static final int MAX_PREFIX_LENGTH = 64;
+
+	/**
 	 * The number of active instances is tracked, will remove shutdown hook when gets to zero.
 	 */
 	private static final AtomicInteger activeCount = new AtomicInteger();
@@ -223,11 +228,15 @@ public class TempFileContext implements Closeable {
 	}
 
 	private static String formatPrefix(String prefix) {
-		if(prefix == null) {
+		if(prefix == null || prefix.isEmpty()) {
 			prefix = "tmp_";
 		} else {
-			while(prefix.length() < 3) {
-				prefix += '_';
+			if(prefix.length() > MAX_PREFIX_LENGTH) {
+				prefix = prefix.substring(0, MAX_PREFIX_LENGTH);
+			} else {
+				while(prefix.length() < 3) {
+					prefix += '_';
+				}
 			}
 		}
 		return prefix;
@@ -236,8 +245,9 @@ public class TempFileContext implements Closeable {
 	/**
 	 * Creates a new temporary directory with the given prefix, recursively deleting on close or exit.
 	 *
-	 * @param  prefix  if {@code null}, {@code "tmp_"} is used.
+	 * @param  prefix  If {@code null} or {@link String#isEmpty()}, {@code "tmp_"} is used.
 	 *                 If less than three characters, padded with trailing {@code '_'} to three characters.
+	 *                 If greater than {@link #MAX_PREFIX_LENGTH} characters, is truncated to a length of {@link #MAX_PREFIX_LENGTH}.
 	 *
 	 * @throws  IllegalStateException  if already {@link #close() closed}
 	 */
@@ -265,8 +275,9 @@ public class TempFileContext implements Closeable {
 	/**
 	 * Creates a new temporary file with the given prefix and suffix, deleting on close or exit.
 	 *
-	 * @param  prefix  if {@code null}, {@code "tmp_"} is used.
+	 * @param  prefix  If {@code null} or {@link String#isEmpty()}, {@code "tmp_"} is used.
 	 *                 If less than three characters, padded with trailing {@code '_'} to three characters.
+	 *                 If greater than {@link #MAX_PREFIX_LENGTH} characters, is truncated to a length of {@link #MAX_PREFIX_LENGTH}.
 	 *
 	 * @param  suffix  when {@code null}, {@code ".tmp"} is used.
 	 *
