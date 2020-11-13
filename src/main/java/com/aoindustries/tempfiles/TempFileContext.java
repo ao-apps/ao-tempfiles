@@ -25,6 +25,7 @@ package com.aoindustries.tempfiles;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -72,6 +73,34 @@ public class TempFileContext implements Closeable {
 	 */
 	private static volatile Thread shutdownHook;
 
+	private static final AtomicReference<File> systemTmpDir = new AtomicReference<>();
+	private static File getSystemTmpDir() {
+		File tmpDir = systemTmpDir.get();
+		if(tmpDir == null) {
+			tmpDir = new File(System.getProperty("java.io.tmpdir"));
+			if(systemTmpDir.compareAndSet(null, tmpDir)) {
+				// Create if does not exist
+				if(!tmpDir.exists()) {
+					try {
+						Files.createDirectories(tmpDir.toPath());
+					} catch(IOException e) {
+						throw new UncheckedIOException("System temp directory does not exist and cannot be created: " + tmpDir, e);
+					}
+				} else {
+					// Sanity check
+					if(!tmpDir.exists()) throw new UncheckedIOException(new IOException("System temp directory does not exist: " + tmpDir));
+					if(!tmpDir.isDirectory()) throw new UncheckedIOException(new IOException("System temp directory is not a directory: " + tmpDir));
+					if(!tmpDir.canWrite()) throw new UncheckedIOException(new IOException("System temp directory is not writable: " + tmpDir));
+					if(!tmpDir.canRead()) throw new UncheckedIOException(new IOException("System temp directory is not readable: " + tmpDir));
+				}
+			} else {
+				// Another thread already set
+				tmpDir = systemTmpDir.get();
+			}
+		}
+		return tmpDir;
+	}
+
 	/**
 	 * Unique ID generator.
 	 */
@@ -102,6 +131,8 @@ public class TempFileContext implements Closeable {
 	 * Shutdown hooks are shared between instances.
 	 * </p>
 	 *
+	 * @param  tmpDir  The temporary directory or {@code null} to use the system default
+	 *
 	 * @see  #close()
 	 */
 	public TempFileContext(File tmpDir) {
@@ -111,7 +142,7 @@ public class TempFileContext implements Closeable {
 		// if(!tmpDir.isDirectory()) throw new IllegalArgumentException("tmpDir is not a directory: " + tmpDir);
 		// if(!tmpDir.canWrite()) throw new IllegalArgumentException("tmpDir is not writable: " + tmpDir);
 		// if(!tmpDir.canRead()) throw new IllegalArgumentException("tmpDir is not readable: " + tmpDir);
-		this.tmpDir = tmpDir;
+		this.tmpDir = (tmpDir == null) ? getSystemTmpDir() : tmpDir;
 		// Increment activeCount while looking for wraparound
 		assert activeCount.get() >= 0;
 		int newActiveCount = activeCount.incrementAndGet();
@@ -148,21 +179,12 @@ public class TempFileContext implements Closeable {
 	/**
 	 * Uses the provided temporary directory.
 	 *
+	 * @param  tmpDir  The temporary directory or {@code null} to use the system default
+	 *
 	 * @see  #TempFileContext(java.io.File)
 	 */
 	public TempFileContext(String tmpDir) {
-		this(new File(tmpDir));
-	}
-
-	private static final AtomicReference<File> systemTmpDir = new AtomicReference<>();
-	private static File getSystemTmpDir() {
-		File tmpDir = systemTmpDir.get();
-		if(tmpDir == null) {
-			tmpDir = new File(System.getProperty("java.io.tmpdir"));
-			File existing = systemTmpDir.getAndSet(tmpDir);
-			if(existing != null) tmpDir = existing;
-		}
-		return tmpDir;
+		this((tmpDir == null) ? null : new File(tmpDir));
 	}
 
 	/**
@@ -172,7 +194,7 @@ public class TempFileContext implements Closeable {
 	 * @see  #TempFileContext(java.io.File)
 	 */
 	public TempFileContext() {
-		this(getSystemTmpDir());
+		this((File)null);
 	}
 
 	/**

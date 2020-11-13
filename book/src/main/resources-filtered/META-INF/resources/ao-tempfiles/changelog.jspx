@@ -37,7 +37,7 @@ along with ao-tempfiles.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2017-08-06T17:54:05-0500"
-		dateModified="2020-11-12T17:00:58-06:00"
+		dateModified="2020-11-13T02:15:17-06:00"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-tempfiles:pom.version}" />
@@ -58,6 +58,15 @@ along with ao-tempfiles.  If not, see <http://www.gnu.org/licenses />.
 						Temporary files are now created with more secure default permissions by using
 						<code>java.nio.file.Files.createTempFile(…)</code> instead of
 						<code>java.io.File.createTempFile(…)</code>.
+					</li>
+					<li>
+						<code>null</code> is now accepted for <code>tmpDir</code>, which will use the system temp
+						directory.
+					</li>
+					<li>
+						The system temp directory will now be created when missing.
+						When already present, some sanity checks are now performed to ensure it is a readable and
+						writable directory.
 					</li>
 				</ul>
 			</changelog:release>
