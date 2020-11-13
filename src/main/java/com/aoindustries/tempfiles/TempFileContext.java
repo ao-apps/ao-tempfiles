@@ -143,6 +143,7 @@ public class TempFileContext implements Closeable {
 	 *
 	 * @see  #close()
 	 */
+	@SuppressWarnings({"UseSpecificCatch", "TooBroadCatch"})
 	public TempFileContext(File tmpDir) {
 		// Not worth the overhead to check here, since some contexts are very short-lived
 		// and any problems will manifest themselves clearly when creating a temporary file.
@@ -162,32 +163,29 @@ public class TempFileContext implements Closeable {
 		if(newActiveCount == 1) {
 			// Create shutdown hook on first only
 			if(logger.isLoggable(Level.FINE)) logger.log(Level.FINE, "Registering shutdown hook");
-			shutdownHook = new Thread() {
-				@Override
-				public void run() {
-					for(Map<String,DeleteMe> deleteMap : deleteOnExits.values()) {
-						synchronized(deleteMap) {
-							for(DeleteMe deleteMe : deleteMap.values()) {
-								File f = deleteMe.file;
-								boolean isDirectory = deleteMe.isDirectory;
-								try {
-									if(f.exists()) {
-										if(isDirectory) {
-											TempFile.deleteRecursive(f);
-										} else {
-											Files.delete(f.toPath());
-										}
+			shutdownHook = new Thread(() -> {
+				for(Map<String,DeleteMe> deleteMap : deleteOnExits.values()) {
+					synchronized(deleteMap) {
+						for(DeleteMe deleteMe : deleteMap.values()) {
+							File f = deleteMe.file;
+							boolean isDirectory = deleteMe.isDirectory;
+							try {
+								if(f.exists()) {
+									if(isDirectory) {
+										TempFile.deleteRecursive(f);
+									} else {
+										Files.delete(f.toPath());
 									}
-								} catch(Throwable t) {
-									if(logger.isLoggable(Level.WARNING)) {
-										logger.log(Level.WARNING, "Unable to delete " + (isDirectory ? "directory" : "file") + " on shutdown: " + f, t);
-									}
+								}
+							} catch(Throwable t) {
+								if(logger.isLoggable(Level.WARNING)) {
+									logger.log(Level.WARNING, "Unable to delete " + (isDirectory ? "directory" : "file") + " on shutdown: " + f, t);
 								}
 							}
 						}
 					}
 				}
-			};
+			});
 			try {
 				Runtime.getRuntime().addShutdownHook(shutdownHook);
 			} catch(IllegalArgumentException | IllegalStateException | SecurityException e) {
@@ -358,6 +356,7 @@ public class TempFileContext implements Closeable {
 	 * </p>
 	 */
 	@Override
+	@SuppressWarnings({"UseSpecificCatch", "TooBroadCatch"})
 	public void close() throws IOException {
 		boolean alreadyClosed = closed.getAndSet(true);
 		if(!alreadyClosed) {
@@ -398,12 +397,14 @@ public class TempFileContext implements Closeable {
 								failedDelete = new ArrayList<>();
 								causes = new ArrayList<>();
 							}
+							assert causes != null;
 							failedDelete.add(deleteMe);
 							causes.add(t);
 						}
 					}
 				}
 				if(failedDelete != null) {
+					assert causes != null;
 					if(failedDelete.size() == 1) {
 						DeleteMe failed = failedDelete.get(0);
 						throw new IOException("Unable to delete temporary " + (failed.isDirectory ? "directory" : "file") + ": " + failed.file, causes.get(0));
