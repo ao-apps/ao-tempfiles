@@ -55,6 +55,11 @@ public class TempFileContext implements Closeable {
 	private static final Logger logger = Logger.getLogger(TempFileContext.class.getName());
 
 	/**
+	 * The minimum prefix length required by {@link Files#createTempFile(java.lang.String, java.lang.String, java.nio.file.attribute.FileAttribute...)}.
+	 */
+	private static final int MIN_PREFIX_LENGTH = 3;
+
+	/**
 	 * Any prefix longer than this will be truncated
 	 */
 	private static final int MAX_PREFIX_LENGTH = 64;
@@ -227,6 +232,44 @@ public class TempFileContext implements Closeable {
 		return tmpDir;
 	}
 
+	/**
+	 * Generates a temp file prefix given a name template.
+	 * <ol>
+	 * <li>If {@code null} or {@link String#isEmpty()}, {@code "tmp_"} is used.</li>
+	 * <li>Any character that is not in {@code [a-zA-Z0-9.-_]} is converted to {@code '_'}.</li>
+	 * <li>If less than {@link #MIN_PREFIX_LENGTH}, padded with trailing {@code '_'} to a length of {@link #MIN_PREFIX_LENGTH}.</li>
+	 * <li>If greater than {@link #MAX_PREFIX_LENGTH} characters, is truncated to a length of {@link #MAX_PREFIX_LENGTH}.</li>
+	 * </ol>
+	 *
+	 * @param  template  the name of the temporary file that will be filtered for only safe characters
+	 */
+	public static String generatePrefix(String template) throws IOException {
+		if(template == null || template.isEmpty()) {
+			return "tmp_";
+		} else {
+			int len = Math.min(template.length(), MAX_PREFIX_LENGTH);
+			// Replace characters that are not safe
+			StringBuilder prefix = new StringBuilder(Math.min(len, MIN_PREFIX_LENGTH));
+			for(int i = 0; i < len; i++) {
+				char ch = template.charAt(i);
+				prefix.append(
+					(ch >= 'a' && ch <= 'z')
+					|| (ch >= 'A' && ch <= 'Z')
+					|| (ch >= '0' && ch <= '9')
+					|| ch == '.'
+					|| ch == '-'
+					|| ch == '_'
+					? ch
+					: '_'
+				);
+			}
+			while(prefix.length() < MIN_PREFIX_LENGTH) {
+				prefix.append('_');
+			}
+			return prefix.toString();
+		}
+	}
+
 	private static String formatPrefix(String prefix) {
 		if(prefix == null || prefix.isEmpty()) {
 			prefix = "tmp_";
@@ -234,7 +277,7 @@ public class TempFileContext implements Closeable {
 			if(prefix.length() > MAX_PREFIX_LENGTH) {
 				prefix = prefix.substring(0, MAX_PREFIX_LENGTH);
 			} else {
-				while(prefix.length() < 3) {
+				while(prefix.length() < MIN_PREFIX_LENGTH) {
 					prefix += '_';
 				}
 			}
@@ -246,7 +289,7 @@ public class TempFileContext implements Closeable {
 	 * Creates a new temporary directory with the given prefix, recursively deleting on close or exit.
 	 *
 	 * @param  prefix  If {@code null} or {@link String#isEmpty()}, {@code "tmp_"} is used.
-	 *                 If less than three characters, padded with trailing {@code '_'} to three characters.
+	 *                 If less than {@link #MIN_PREFIX_LENGTH}, padded with trailing {@code '_'} to a length of {@link #MIN_PREFIX_LENGTH}.
 	 *                 If greater than {@link #MAX_PREFIX_LENGTH} characters, is truncated to a length of {@link #MAX_PREFIX_LENGTH}.
 	 *
 	 * @throws  IllegalStateException  if already {@link #close() closed}
@@ -276,7 +319,7 @@ public class TempFileContext implements Closeable {
 	 * Creates a new temporary file with the given prefix and suffix, deleting on close or exit.
 	 *
 	 * @param  prefix  If {@code null} or {@link String#isEmpty()}, {@code "tmp_"} is used.
-	 *                 If less than three characters, padded with trailing {@code '_'} to three characters.
+	 *                 If less than {@link #MIN_PREFIX_LENGTH}, padded with trailing {@code '_'} to a length of {@link #MIN_PREFIX_LENGTH}.
 	 *                 If greater than {@link #MAX_PREFIX_LENGTH} characters, is truncated to a length of {@link #MAX_PREFIX_LENGTH}.
 	 *
 	 * @param  suffix  when {@code null}, {@code ".tmp"} is used.
