@@ -25,6 +25,7 @@ package com.aoindustries.tempfiles;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -199,7 +200,7 @@ public class TempFileContext implements Closeable {
 		} else {
 			while(prefix.length() < 3) prefix += '_';
 		}
-		File tmpFile = File.createTempFile(prefix, suffix, tmpDir);
+		File tmpFile = Files.createTempFile(tmpDir.toPath(), prefix, suffix).toFile();
 		// Add to delete-on-exit
 		Map<String,File> deleteMap = deleteOnExits.get(id);
 		if(deleteMap == null) {
