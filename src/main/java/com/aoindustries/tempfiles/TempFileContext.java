@@ -62,8 +62,6 @@ public class TempFileContext implements Closeable {
 	 * The files registered for delete on exit.
 	 * <p>
 	 * Note: The key is an incrementing Long to avoid a reference to the specific instance.
-	 * This allows {@link #finalize()} to kick-in and automatically call {@link #close()}
-	 * when API users are reckless.
 	 * </p>
 	 */
 	private static final ConcurrentMap<Long, Map<String,File>> deleteOnExits = new ConcurrentHashMap<>();
@@ -337,22 +335,6 @@ public class TempFileContext implements Closeable {
 					}
 				}
 			}
-		}
-	}
-
-	/**
-	 * Do not rely on the finalizer - this is just in case something is way off
-	 * and the calling code doesn't correctly close their instances.
-	 *
-     * @deprecated The finalization mechanism is inherently problematic.
-	 */
-    @Deprecated // Java 9: (since="9")
-	@Override
-	protected void finalize() throws Throwable {
-		try {
-			close();
-		} finally {
-			super.finalize();
 		}
 	}
 }

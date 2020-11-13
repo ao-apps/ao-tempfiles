@@ -68,6 +68,7 @@ along with ao-tempfiles.  If not, see <http://www.gnu.org/licenses />.
 						When already present, some sanity checks are now performed to ensure it is a readable and
 						writable directory.
 					</li>
+					<li>Removed finalizers.  Applications are expected to generally close via try-with-resources.</li>
 				</ul>
 			</changelog:release>
 		</c:if>
