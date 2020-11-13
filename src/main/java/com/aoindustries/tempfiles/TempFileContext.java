@@ -27,10 +27,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -58,13 +59,22 @@ public class TempFileContext implements Closeable {
 	 */
 	private static final AtomicInteger activeCount = new AtomicInteger();
 
+	private static class DeleteMe {
+		private final File file;
+		private final boolean isDirectory;
+		private DeleteMe(File file, boolean isDirectory) {
+			this.file = file;
+			this.isDirectory = isDirectory;
+		}
+	}
+
 	/**
 	 * The files registered for delete on exit.
 	 * <p>
 	 * Note: The key is an incrementing Long to avoid a reference to the specific instance.
 	 * </p>
 	 */
-	private static final ConcurrentMap<Long, Map<String,File>> deleteOnExits = new ConcurrentHashMap<>();
+	private static final ConcurrentMap<Long, Map<String,DeleteMe>> deleteOnExits = new ConcurrentHashMap<>();
 
 	/**
 	 * The shutdown hook shared by all active instances.
@@ -155,11 +165,23 @@ public class TempFileContext implements Closeable {
 			shutdownHook = new Thread() {
 				@Override
 				public void run() {
-					for(Map<String,File> deleteMap : deleteOnExits.values()) {
+					for(Map<String,DeleteMe> deleteMap : deleteOnExits.values()) {
 						synchronized(deleteMap) {
-							for(File file : deleteMap.values()) {
-								if(file.exists() && !file.delete()) {
-									if(logger.isLoggable(Level.WARNING)) logger.log(Level.WARNING, "Unable to delete file on shutdown: {0}", file);
+							for(DeleteMe deleteMe : deleteMap.values()) {
+								File f = deleteMe.file;
+								boolean isDirectory = deleteMe.isDirectory;
+								try {
+									if(f.exists()) {
+										if(isDirectory) {
+											TempFile.deleteRecursive(f);
+										} else {
+											Files.delete(f.toPath());
+										}
+									}
+								} catch(Throwable t) {
+									if(logger.isLoggable(Level.WARNING)) {
+										logger.log(Level.WARNING, "Unable to delete " + (isDirectory ? "directory" : "file") + " on shutdown: " + f, t);
+									}
 								}
 							}
 						}
@@ -202,6 +224,46 @@ public class TempFileContext implements Closeable {
 		return tmpDir;
 	}
 
+	private static String formatPrefix(String prefix) {
+		if(prefix == null) {
+			prefix = "tmp_";
+		} else {
+			while(prefix.length() < 3) {
+				prefix += '_';
+			}
+		}
+		return prefix;
+	}
+
+	/**
+	 * Creates a new temporary directory with the given prefix, recursively deleting on close or exit.
+	 *
+	 * @param  prefix  if {@code null}, {@code "tmp_"} is used.
+	 *                 If less than three characters, padded with trailing {@code '_'} to three characters.
+	 *
+	 * @throws  IllegalStateException  if already {@link #close() closed}
+	 */
+	public TempFile createTempDirectory(String prefix) throws IllegalStateException, IOException {
+		if(closed.get()) throw new IllegalStateException("TempFiles is closed");
+		while(true) {
+			Path tmpPath = Files.createTempDirectory(tmpDir.toPath(), formatPrefix(prefix));
+			File tmpFile = tmpPath.toFile();
+			if(addDeleteOnExit(id, tmpFile, true)) {
+				return new TempFile(id, tmpFile, true);
+			}
+			Files.delete(tmpPath);
+		}
+	}
+
+	/**
+	 * Creates a new temporary directory with default prefix, recursively deleting on close or exit.
+	 *
+	 * @throws  IllegalStateException  if already {@link #close() closed}
+	 */
+	public TempFile createTempDirectory() throws IllegalStateException, IOException {
+		return createTempDirectory(null);
+	}
+
 	/**
 	 * Creates a new temporary file with the given prefix and suffix, deleting on close or exit.
 	 *
@@ -214,25 +276,14 @@ public class TempFileContext implements Closeable {
 	 */
 	public TempFile createTempFile(String prefix, String suffix) throws IllegalStateException, IOException {
 		if(closed.get()) throw new IllegalStateException("TempFiles is closed");
-
-		if(prefix == null) {
-			prefix = "tmp_";
-		} else {
-			while(prefix.length() < 3) prefix += '_';
+		while(true) {
+			Path tmpPath = Files.createTempFile(tmpDir.toPath(), formatPrefix(prefix), suffix);
+			File tmpFile = tmpPath.toFile();
+			if(addDeleteOnExit(id, tmpFile, false)) {
+				return new TempFile(id, tmpFile, false);
+			}
+			Files.delete(tmpPath);
 		}
-		File tmpFile = Files.createTempFile(tmpDir.toPath(), prefix, suffix).toFile();
-		// Add to delete-on-exit
-		Map<String,File> deleteMap = deleteOnExits.get(id);
-		if(deleteMap == null) {
-			deleteMap = new LinkedHashMap<>();
-			Map<String,File> existing = deleteOnExits.putIfAbsent(id, deleteMap);
-			if(existing != null) deleteMap = existing;
-		}
-		synchronized(deleteMap) {
-			if(deleteMap.put(tmpFile.getName(), tmpFile) != null) throw new IOException("Duplicate temp filename: " + tmpFile);
-		}
-		// Return temp file
-		return new TempFile(id, tmpFile);
 	}
 
 	/**
@@ -254,10 +305,25 @@ public class TempFileContext implements Closeable {
 	}
 
 	/**
+	 * @return  {@code true} when added or {@code false} when name already tracked within the id
+	 */
+	private static boolean addDeleteOnExit(Long id, File tmpFile, boolean isDirectory) throws IOException {
+		Map<String,DeleteMe> deleteMap = deleteOnExits.get(id);
+		if(deleteMap == null) {
+			deleteMap = new LinkedHashMap<>();
+			Map<String,DeleteMe> existing = deleteOnExits.putIfAbsent(id, deleteMap);
+			if(existing != null) deleteMap = existing;
+		}
+		synchronized(deleteMap) {
+			return deleteMap.putIfAbsent(tmpFile.getName(), new DeleteMe(tmpFile, isDirectory)) == null;
+		}
+	}
+
+	/**
 	 * @see  TempFile#close()
 	 */
 	static void removeDeleteOnExit(Long id, String name) {
-		Map<String,File> deleteMap = deleteOnExits.get(id);
+		Map<String,DeleteMe> deleteMap = deleteOnExits.get(id);
 		if(deleteMap != null) {
 			synchronized(deleteMap) {
 				deleteMap.remove(name);
@@ -269,7 +335,7 @@ public class TempFileContext implements Closeable {
 	 * Gets the number of files that are currently scheduled to be deleted on close/exit.
 	 */
 	public int getSize() {
-		Map<String,File> deleteMap = deleteOnExits.get(id);
+		Map<String,DeleteMe> deleteMap = deleteOnExits.get(id);
 		if(deleteMap != null) {
 			synchronized(deleteMap) {
 				return deleteMap.size();
@@ -295,7 +361,7 @@ public class TempFileContext implements Closeable {
 	public void close() throws IOException {
 		boolean alreadyClosed = closed.getAndSet(true);
 		if(!alreadyClosed) {
-			Map<String,File> deleteMap = deleteOnExits.remove(id);
+			Map<String,DeleteMe> deleteMap = deleteOnExits.remove(id);
 			assert activeCount.get() > 0;
 			int newActiveCount = activeCount.decrementAndGet();
 			if(logger.isLoggable(Level.FINER)) logger.log(Level.FINER, "activeCount={0}", newActiveCount);
@@ -314,24 +380,43 @@ public class TempFileContext implements Closeable {
 			}
 			// Delete own temp files
 			if(deleteMap != null) {
-				Set<File> failedDelete = null;
+				List<DeleteMe> failedDelete = null;
+				List<Throwable> causes = null;
 				synchronized(deleteMap) {
-					for(File file : deleteMap.values()) {
-						if(file.exists() && !file.delete()) {
-							if(failedDelete == null) failedDelete = new LinkedHashSet<>();
-							failedDelete.add(file);
+					for(DeleteMe deleteMe : deleteMap.values()) {
+						File f = deleteMe.file;
+						try {
+							if(f.exists()) {
+								if(deleteMe.isDirectory) {
+									TempFile.deleteRecursive(f);
+								} else {
+									Files.delete(f.toPath());
+								}
+							}
+						} catch(Throwable t) {
+							if(failedDelete == null) {
+								failedDelete = new ArrayList<>();
+								causes = new ArrayList<>();
+							}
+							failedDelete.add(deleteMe);
+							causes.add(t);
 						}
 					}
 				}
 				if(failedDelete != null) {
 					if(failedDelete.size() == 1) {
-						throw new IOException("Unable to delete temporary file: " + failedDelete.iterator().next());
+						DeleteMe failed = failedDelete.get(0);
+						throw new IOException("Unable to delete temporary " + (failed.isDirectory ? "directory" : "file") + ": " + failed.file, causes.get(0));
 					} else {
-						StringBuilder sb = new StringBuilder("Unable to delete temporary files:");
-						for(File file : failedDelete) {
-							sb.append("\n    ").append(file.toString());
+						StringBuilder sb = new StringBuilder("Unable to delete temporary directories/files:");
+						for(DeleteMe failed : failedDelete) {
+							sb.append("\n    ").append(failed.file);
 						}
-						throw new IOException(sb.toString());
+						IOException ioExc = new IOException(sb.toString());
+						for(Throwable cause : causes) {
+							ioExc.addSuppressed(cause);
+						}
+						throw ioExc;
 					}
 				}
 			}
