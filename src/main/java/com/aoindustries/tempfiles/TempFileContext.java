@@ -339,12 +339,57 @@ public class TempFileContext implements Closeable {
 	}
 
 	/**
-	 * Creates a new temporary file with default suffix, deleting on close or exit.
+	 * Creates a new temporary file based on the given name, deleting on close or exit.
+	 * <p>
+	 * When the file contains a dot ('.') followed by only the characters in {@code [a-zA-Z0-9_]}, and the dot is not
+	 * the first character, it is used as the temp file suffix (to maintain file type by extension).  Multiple
+	 * extensions are supported, such as used by {@code "filename.tar.gz"}.
+	 * </p>
+	 * <p>
+	 * When the suffix is removed from the name, the prefix is followed by an underscore ('_') separator.
+	 * </p>
+	 * <p>
+	 * When no automatic suffix is determine, defaults to {@code ".tmp"}.
+	 * </p>
 	 *
 	 * @throws  IllegalStateException  if already {@link #close() closed}
 	 */
-	public TempFile createTempFile(String prefix) throws IllegalStateException, IOException {
-		return createTempFile(prefix, null);
+	public TempFile createTempFile(String name) throws IllegalStateException, IOException {
+		String prefix;
+		String suffix;
+		if(name == null || name.isEmpty()) {
+			prefix = null;
+			suffix = null;
+		} else {
+			int len = name.length();
+			int lastDot = len;
+			for(int i = len - 1; i > 0; i--) {
+				char ch = name.charAt(i);
+				if(ch == '.') {
+					if(i == (lastDot - 1)) {
+						// End on double-dot
+						break;
+					}
+					lastDot = i;
+				} else if(
+					(ch < 'a' || ch > 'z')
+					&& (ch < 'A' || ch > 'Z')
+					&& (ch < '0' || ch > '9')
+					&& ch != '_'
+				) {
+					// End on unsupported character
+					break;
+				}
+			}
+			if(lastDot == len) {
+				prefix = name;
+				suffix = null;
+			} else {
+				prefix = name.substring(lastDot) + '_';
+				suffix = name.substring(lastDot);
+			}
+		}
+		return createTempFile(prefix, suffix);
 	}
 
 	/**
