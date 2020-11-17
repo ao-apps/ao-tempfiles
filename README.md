@@ -38,7 +38,6 @@ Java temporary file API filling-in JDK gaps and deficiencies.
 * Small footprint, self-contained, no transitive dependencies - not part of a big monolithic package.
 * Java 1.8 implementation:
     * Android compatible.
-    * Java EE 6+ compatible.
 
 ## Motivation
 The Java language has a long-term and [well-documented](https://stackoverflow.com/questions/40119188/memory-leak-on-deleteonexithook) memory leak when using [File.deleteOnExit()](https://docs.oracle.com/javase/7/docs/api/java/io/File.html#deleteOnExit()).  The [bug report](https://bugs.openjdk.java.net/browse/JDK-4872014) has been open for 14 years as of the time of this writing.
