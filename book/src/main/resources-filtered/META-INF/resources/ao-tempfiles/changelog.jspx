@@ -37,7 +37,7 @@ along with ao-tempfiles.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2017-08-06T17:54:05-0500"
-		dateModified="2020-11-13T17:24:17-06:00"
+		dateModified="2020-11-17T13:50:37-06:00"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.aoindustries:ao-tempfiles:pom.version}" />
@@ -52,36 +52,45 @@ along with ao-tempfiles.  If not, see <http://www.gnu.org/licenses />.
 				groupId="@{project.groupId}"
 				artifactId="@{documented.artifactId}"
 				scmUrl="@{project.scm.url}"
-			>
-				<ul>
-					<li>
-						Temporary files are now created with more secure default permissions by using
-						<code>java.nio.file.Files.createTempFile(…)</code> instead of
-						<code>java.io.File.createTempFile(…)</code>.
-					</li>
-					<li>
-						<code>null</code> is now accepted for <code>tmpDir</code>, which will use the system temp
-						directory.
-					</li>
-					<li>
-						The system temp directory will now be created when missing.
-						When already present, some sanity checks are now performed to ensure it is a readable and
-						writable directory.
-					</li>
-					<li>Added support for temporary directories, which are recursively deleted.</li>
-					<li>Removed finalizers.  Applications are expected to generally close via try-with-resources.</li>
-					<li>Temp name prefixes are now truncated to 64 characters.</li>
-					<li>
-						New method <code>TempFileContext.generatePrefix(String)</code> for creating safe prefixes from
-						arbitrary, possibly untrusted sources.
-					</li>
-					<li>
-						<code>TempFileContext.createTempFile(String)</code> now maintains filename extension as a suffix,
-						as long as all characters are in <code>[a-zA-Z0-9_]</code>.
-					</li>
-				</ul>
-			</changelog:release>
+			/>
 		</c:if>
+
+		<changelog:release
+			projectName="@{documented.name}"
+			version="2.0.0"
+			datePublished="2020-11-17T13:50:37-06:00"
+			groupId="@{project.groupId}"
+			artifactId="@{documented.artifactId}"
+			scmUrl="@{project.scm.url}"
+		>
+			<ul>
+				<li>
+					Temporary files are now created with more secure default permissions by using
+					<code>java.nio.file.Files.createTempFile(…)</code> instead of
+					<code>java.io.File.createTempFile(…)</code>.
+				</li>
+				<li>
+					<code>null</code> is now accepted for <code>tmpDir</code>, which will use the system temp
+					directory.
+				</li>
+				<li>
+					The system temp directory will now be created when missing.
+					When already present, some sanity checks are now performed to ensure it is a readable and
+					writable directory.
+				</li>
+				<li>Added support for temporary directories, which are recursively deleted.</li>
+				<li>Removed finalizers.  Applications are expected to generally close via try-with-resources.</li>
+				<li>Temp name prefixes are now truncated to 64 characters.</li>
+				<li>
+					New method <code>TempFileContext.generatePrefix(String)</code> for creating safe prefixes from
+					arbitrary, possibly untrusted sources.
+				</li>
+				<li>
+					<code>TempFileContext.createTempFile(String)</code> now maintains filename extension as a suffix,
+					as long as all characters are in <code>[a-zA-Z0-9_]</code>.
+				</li>
+			</ul>
+		</changelog:release>
 
 		<changelog:release
 			projectName="@{documented.name}"
