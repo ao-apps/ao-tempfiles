@@ -1,6 +1,6 @@
 /*
  * ao-tempfiles - Java temporary file API filling-in JDK gaps and deficiencies.
- * Copyright (C) 2017, 2018, 2019, 2020  AO Industries, Inc.
+ * Copyright (C) 2017, 2018, 2019, 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -84,7 +84,7 @@ public class TempFileContext implements Closeable {
 	 * Note: The key is an incrementing Long to avoid a reference to the specific instance.
 	 * </p>
 	 */
-	private static final ConcurrentMap<Long, Map<String,DeleteMe>> deleteOnExits = new ConcurrentHashMap<>();
+	private static final ConcurrentMap<Long, Map<String, DeleteMe>> deleteOnExits = new ConcurrentHashMap<>();
 
 	/**
 	 * The shutdown hook shared by all active instances.
@@ -174,7 +174,7 @@ public class TempFileContext implements Closeable {
 			// Create shutdown hook on first only
 			if(logger.isLoggable(Level.FINE)) logger.log(Level.FINE, "Registering shutdown hook");
 			shutdownHook = new Thread(() -> {
-				for(Map<String,DeleteMe> deleteMap : deleteOnExits.values()) {
+				for(Map<String, DeleteMe> deleteMap : deleteOnExits.values()) {
 					synchronized(deleteMap) {
 						for(DeleteMe deleteMe : deleteMap.values()) {
 							File f = deleteMe.file;
@@ -405,10 +405,10 @@ public class TempFileContext implements Closeable {
 	 * @return  {@code true} when added or {@code false} when name already tracked within the id
 	 */
 	private static boolean addDeleteOnExit(Long id, File tmpFile, boolean isDirectory) throws IOException {
-		Map<String,DeleteMe> deleteMap = deleteOnExits.get(id);
+		Map<String, DeleteMe> deleteMap = deleteOnExits.get(id);
 		if(deleteMap == null) {
 			deleteMap = new LinkedHashMap<>();
-			Map<String,DeleteMe> existing = deleteOnExits.putIfAbsent(id, deleteMap);
+			Map<String, DeleteMe> existing = deleteOnExits.putIfAbsent(id, deleteMap);
 			if(existing != null) deleteMap = existing;
 		}
 		synchronized(deleteMap) {
@@ -420,7 +420,7 @@ public class TempFileContext implements Closeable {
 	 * @see  TempFile#close()
 	 */
 	static void removeDeleteOnExit(Long id, String name) {
-		Map<String,DeleteMe> deleteMap = deleteOnExits.get(id);
+		Map<String, DeleteMe> deleteMap = deleteOnExits.get(id);
 		if(deleteMap != null) {
 			synchronized(deleteMap) {
 				deleteMap.remove(name);
@@ -432,7 +432,7 @@ public class TempFileContext implements Closeable {
 	 * Gets the number of files that are currently scheduled to be deleted on close/exit.
 	 */
 	public int getSize() {
-		Map<String,DeleteMe> deleteMap = deleteOnExits.get(id);
+		Map<String, DeleteMe> deleteMap = deleteOnExits.get(id);
 		if(deleteMap != null) {
 			synchronized(deleteMap) {
 				return deleteMap.size();
@@ -459,7 +459,7 @@ public class TempFileContext implements Closeable {
 	public void close() throws IOException {
 		boolean alreadyClosed = closed.getAndSet(true);
 		if(!alreadyClosed) {
-			Map<String,DeleteMe> deleteMap = deleteOnExits.remove(id);
+			Map<String, DeleteMe> deleteMap = deleteOnExits.remove(id);
 			assert activeCount.get() > 0;
 			int newActiveCount = activeCount.decrementAndGet();
 			if(logger.isLoggable(Level.FINER)) logger.log(Level.FINER, "activeCount={0}", newActiveCount);
