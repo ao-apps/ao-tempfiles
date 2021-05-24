@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 ao-tempfiles - Java temporary file API filling-in JDK gaps and deficiencies.
-Copyright (C) 2017, 2019, 2020  AO Industries, Inc.
+Copyright (C) 2017, 2019, 2020, 2021  AO Industries, Inc.
     support@aoindustries.com
     7262 Bull Pen Cir
     Mobile, AL 36695
@@ -33,7 +33,7 @@ along with ao-tempfiles.  If not, see <http://www.gnu.org/licenses />.
 	<core:page
 		title="@{documented.name}"
 		description="@{documented.description}"
-		datePublished="2017-08-06T17:54:05-0500"
+		datePublished="2017-08-06T17:54:05-05:00"
 		dateModified="2020-11-16T20:30:46-06:00"
 	>
 		<core:child page="changelog.jspx" />
