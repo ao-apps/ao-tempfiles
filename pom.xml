@@ -25,11 +25,11 @@ along with ao-tempfiles.  If not, see <http://www.gnu.org/licenses />.
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.aoindustries</groupId><artifactId>ao-oss-parent</artifactId><version>1.16.0-SNAPSHOT</version>
-		<relativePath>../ao-oss-parent/pom.xml</relativePath>
+		<groupId>com.aoapps</groupId><artifactId>ao-oss-parent</artifactId><version>1.16.0-SNAPSHOT</version>
+		<relativePath>../parent/pom.xml</relativePath>
 	</parent>
 
-	<groupId>com.aoindustries</groupId><artifactId>ao-tempfiles</artifactId><version>2.0.1-SNAPSHOT</version>
+	<groupId>com.aoapps</groupId><artifactId>ao-tempfiles</artifactId><version>2.0.1-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
 	<properties>
@@ -40,16 +40,18 @@ along with ao-tempfiles.  If not, see <http://www.gnu.org/licenses />.
 		<!-- This must be set in your ~/.m2/settings.xml when building with JDK < 9 -->
 		<javase.bootclasspath>${javase.bootclasspath.8}</javase.bootclasspath>
 
+		<javadoc.breadcrumbs><![CDATA[<a target="${javadoc.target}" href="https://oss.aoapps.com/">AO OSS</a>
+/ <a target="${javadoc.target}" href="${project.url}">TempFiles</a>]]></javadoc.breadcrumbs>
 		<javadoc.modules><![CDATA[<div style="float:left; margin: 0 1em">
 			<h2 style="margin-top: 0em">Modules</h2>
 			<ul>
-				<li><a target="${javadoc.target}" href="https://aoindustries.com/ao-tempfiles/servlet/">AO TempFiles Servlet</a></li>
+				<li><a target="${javadoc.target}" href="https://oss.aoapps.com/tempfiles/servlet/">AO TempFiles Servlet</a></li>
 			</ul>
 		</div>]]></javadoc.modules>
 	</properties>
 
 	<name>AO TempFiles</name>
-	<url>https://aoindustries.com/ao-tempfiles/</url>
+	<url>https://oss.aoapps.com/tempfiles/</url>
 	<description>Java temporary file API filling-in JDK gaps and deficiencies.</description>
 	<inceptionYear>2017</inceptionYear>
 
