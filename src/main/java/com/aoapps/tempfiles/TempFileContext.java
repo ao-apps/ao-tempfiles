@@ -20,7 +20,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with ao-tempfiles.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.aoindustries.tempfiles;
+package com.aoapps.tempfiles;
 
 import java.io.Closeable;
 import java.io.File;
