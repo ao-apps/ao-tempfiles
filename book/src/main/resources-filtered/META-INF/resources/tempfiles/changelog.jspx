@@ -37,7 +37,7 @@ along with ao-tempfiles.  If not, see <http://www.gnu.org/licenses />.
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2017-08-06T17:54:05-05:00"
-		dateModified="2021-06-27T16:13:41-05:00"
+		dateModified="2021-07-04T00:46:35-05:00"
 	>
 		<c:if test="${fn:endsWith('@{project.version}', '-SNAPSHOT') and !fn:endsWith('@{project.version}', '-POST-SNAPSHOT')}">
 			<changelog:release
@@ -47,14 +47,23 @@ along with ao-tempfiles.  If not, see <http://www.gnu.org/licenses />.
 				artifactId="@{documented.artifactId}"
 				repository="https://s01.oss.sonatype.org/content/repositories/snapshots/"
 				scmUrl="@{project.scm.url}"
-			>
-				<ul>
-					<li>Now supports Java 9+ modules with included <code>module-info.class</code>.</li>
-					<li>Maven artifact relocated from <code>com.aoindustries:ao-tempfiles</code> to <code>com.aoapps:ao-tempfiles</code>.</li>
-					<li>Package renamed from <code>com.aoindustries.tempfiles</code> to <code>com.aoapps.tempfiles</code>.</li>
-				</ul>
-			</changelog:release>
+			/>
 		</c:if>
+
+		<changelog:release
+			projectName="@{documented.name}"
+			version="3.0.0"
+			datePublished="2021-07-04T00:46:35-05:00"
+			groupId="@{project.groupId}"
+			artifactId="@{documented.artifactId}"
+			scmUrl="@{project.scm.url}"
+		>
+			<ul>
+				<li>Now supports Java 9+ modules with included <code>module-info.class</code>.</li>
+				<li>Maven artifact relocated from <code>com.aoindustries:ao-tempfiles</code> to <code>com.aoapps:ao-tempfiles</code>.</li>
+				<li>Package renamed from <code>com.aoindustries.tempfiles</code> to <code>com.aoapps.tempfiles</code>.</li>
+			</ul>
+		</changelog:release>
 
 		<changelog:release
 			projectName="@{documented.name}"
