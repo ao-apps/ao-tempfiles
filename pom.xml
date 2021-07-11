@@ -49,6 +49,10 @@ along with ao-tempfiles.  If not, see <http://www.gnu.org/licenses />.
 				<li><a target="${javadoc.target}" href="https://oss.aoapps.com/tempfiles/servlet/">AO TempFiles Servlet</a></li>
 			</ul>
 		</div>]]></javadoc.modules>
+		<!-- SonarCloud.io -->
+		<sonar.projectKey>${project.groupId}:${project.artifactId}</sonar.projectKey>
+		<sonar.organization>aoindustries</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 
 	<name>AO TempFiles</name>
