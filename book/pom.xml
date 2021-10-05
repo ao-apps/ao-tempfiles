@@ -74,20 +74,20 @@ along with ao-tempfiles.  If not, see <http://www.gnu.org/licenses />.
 	</developers>
 
 	<scm>
-		<connection>scm:git:git://github.com/aoindustries/ao-tempfiles.git</connection>
-		<developerConnection>scm:git:git@github.com:aoindustries/ao-tempfiles.git</developerConnection>
-		<url>https://github.com/aoindustries/ao-tempfiles</url>
+		<connection>scm:git:git://github.com/ao-apps/ao-tempfiles.git</connection>
+		<developerConnection>scm:git:git@github.com:ao-apps/ao-tempfiles.git</developerConnection>
+		<url>https://github.com/ao-apps/ao-tempfiles</url>
 		<tag>HEAD</tag>
 	</scm>
 
 	<issueManagement>
 		<system>GitHub Issues</system>
-		<url>https://github.com/aoindustries/ao-tempfiles/issues</url>
+		<url>https://github.com/ao-apps/ao-tempfiles/issues</url>
 	</issueManagement>
 
 	<ciManagement>
 		<system>GitHub Actions</system>
-		<url>https://github.com/aoindustries/ao-tempfiles/actions</url>
+		<url>https://github.com/ao-apps/ao-tempfiles/actions</url>
 	</ciManagement>
 
 	<repositories>
