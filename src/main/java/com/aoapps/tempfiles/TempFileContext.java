@@ -274,14 +274,20 @@ public class TempFileContext implements Closeable {
 		if(prefix == null || prefix.isEmpty()) {
 			prefix = "tmp_";
 		} else {
-			if(prefix.length() > MAX_PREFIX_LENGTH) {
+			int plen = prefix.length();
+			if(plen > MAX_PREFIX_LENGTH) {
 				prefix = prefix.substring(0, MAX_PREFIX_LENGTH);
-			} else {
-				while(prefix.length() < MIN_PREFIX_LENGTH) {
-					prefix += '_';
-				}
+			} else if(plen < MIN_PREFIX_LENGTH) {
+				StringBuilder sb = new StringBuilder(MIN_PREFIX_LENGTH);
+				sb.append(prefix);
+				do {
+					sb.append('_');
+				} while(sb.length() < MIN_PREFIX_LENGTH);
+				prefix = sb.toString();
 			}
 		}
+		assert prefix.length() >= MIN_PREFIX_LENGTH;
+		assert prefix.length() <= MAX_PREFIX_LENGTH;
 		return prefix;
 	}
 
