@@ -43,8 +43,8 @@ along with ao-tempfiles.  If not, see <https://www.gnu.org/licenses/>.
 
 		<javadoc.breadcrumbs><![CDATA[<a target="${javadoc.target}" href="https://oss.aoapps.com/">AO OSS</a>
 / <a target="${javadoc.target}" href="${project.url}">TempFiles</a>]]></javadoc.breadcrumbs>
-		<javadoc.modules><![CDATA[<div style="float:left; margin: 0 1em">
-			<h2 style="margin-top: 0em">Modules</h2>
+		<javadoc.modules><![CDATA[<div>
+			<h2>Modules</h2>
 			<ul>
 				<li><a target="${javadoc.target}" href="https://oss.aoapps.com/tempfiles/servlet/">AO TempFiles Servlet</a></li>
 			</ul>
