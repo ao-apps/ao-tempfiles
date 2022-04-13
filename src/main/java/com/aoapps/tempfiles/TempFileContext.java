@@ -1,6 +1,6 @@
 /*
  * ao-tempfiles - Java temporary file API filling-in JDK gaps and deficiencies.
- * Copyright (C) 2017, 2018, 2019, 2020, 2021  AO Industries, Inc.
+ * Copyright (C) 2017, 2018, 2019, 2020, 2021, 2022  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -243,7 +243,7 @@ public class TempFileContext implements Closeable {
 	 *
 	 * @param  template  the name of the temporary file that will be filtered for only safe characters
 	 */
-	public static String generatePrefix(String template) throws IOException {
+	public static String generatePrefix(String template) {
 		if(template == null || template.isEmpty()) {
 			return "tmp_";
 		} else {
@@ -410,7 +410,7 @@ public class TempFileContext implements Closeable {
 	/**
 	 * @return  {@code true} when added or {@code false} when name already tracked within the id
 	 */
-	private static boolean addDeleteOnExit(Long id, File tmpFile, boolean isDirectory) throws IOException {
+	private static boolean addDeleteOnExit(Long id, File tmpFile, boolean isDirectory) {
 		Map<String, DeleteMe> deleteMap = deleteOnExits.get(id);
 		if(deleteMap == null) {
 			deleteMap = new LinkedHashMap<>();
