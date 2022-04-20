@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 ao-tempfiles - Java temporary file API filling-in JDK gaps and deficiencies.
-Copyright (C) 2017, 2019, 2020, 2021  AO Industries, Inc.
+Copyright (C) 2017, 2019, 2020, 2021, 2022  AO Industries, Inc.
     support@aoindustries.com
     7262 Bull Pen Cir
     Mobile, AL 36695
@@ -22,133 +22,133 @@ You should have received a copy of the GNU Lesser General Public License
 along with ao-tempfiles.  If not, see <https://www.gnu.org/licenses/>.
 -->
 <jsp:root
-	xmlns:ao="https://oss.aoapps.com/taglib/"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:changelog="https://semanticcms.com/changelog/taglib/"
-	xmlns:core="https://semanticcms.com/core/taglib/"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:jsp="http://java.sun.com/JSP/Page"
-	version="2.1"
+  xmlns:ao="https://oss.aoapps.com/taglib/"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:changelog="https://semanticcms.com/changelog/taglib/"
+  xmlns:core="https://semanticcms.com/core/taglib/"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  xmlns:jsp="http://java.sun.com/JSP/Page"
+  version="2.1"
 >
-	<jsp:directive.page language="java" pageEncoding="UTF-8" />
-	<jsp:directive.page session="false" />
-	<core:page
-		title="@{documented.name} Changelog"
-		shortTitle="Changelog"
-		tocLevels="1"
-		datePublished="2017-08-06T17:54:05-05:00"
-		dateModified="2021-07-04T00:46:35-05:00"
-	>
-		<c:if test="${fn:endsWith('@{project.version}', '-SNAPSHOT') and !fn:endsWith('@{project.version}', '-POST-SNAPSHOT')}">
-			<changelog:release
-				projectName="@{documented.name}"
-				version="@{project.version}"
-				groupId="@{project.groupId}"
-				artifactId="@{documented.artifactId}"
-				repository="@{nexusUrl}content/repositories/snapshots/"
-				scmUrl="@{project.scm.url}"
-			/>
-		</c:if>
+  <jsp:directive.page language="java" pageEncoding="UTF-8" />
+  <jsp:directive.page session="false" />
+  <core:page
+    title="@{documented.name} Changelog"
+    shortTitle="Changelog"
+    tocLevels="1"
+    datePublished="2017-08-06T17:54:05-05:00"
+    dateModified="2021-07-04T00:46:35-05:00"
+  >
+    <c:if test="${fn:endsWith('@{project.version}', '-SNAPSHOT') and !fn:endsWith('@{project.version}', '-POST-SNAPSHOT')}">
+      <changelog:release
+        projectName="@{documented.name}"
+        version="@{project.version}"
+        groupId="@{project.groupId}"
+        artifactId="@{documented.artifactId}"
+        repository="@{nexusUrl}content/repositories/snapshots/"
+        scmUrl="@{project.scm.url}"
+      />
+    </c:if>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="3.0.0"
-			datePublished="2021-07-04T00:46:35-05:00"
-			groupId="@{project.groupId}"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Now supports Java 9+ modules with included <code>module-info.class</code>.</li>
-				<li>Maven artifact relocated from <code>com.aoindustries:ao-tempfiles</code> to <code>com.aoapps:ao-tempfiles</code>.</li>
-				<li>Package renamed from <code>com.aoindustries.tempfiles</code> to <code>com.aoapps.tempfiles</code>.</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="3.0.0"
+      datePublished="2021-07-04T00:46:35-05:00"
+      groupId="@{project.groupId}"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Now supports Java 9+ modules with included <code>module-info.class</code>.</li>
+        <li>Maven artifact relocated from <code>com.aoindustries:ao-tempfiles</code> to <code>com.aoapps:ao-tempfiles</code>.</li>
+        <li>Package renamed from <code>com.aoindustries.tempfiles</code> to <code>com.aoapps.tempfiles</code>.</li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="2.0.0"
-			datePublished="2020-11-17T13:50:37-06:00"
-			groupId="com.aoindustries"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>
-					Temporary files are now created with more secure default permissions by using
-					<code>java.nio.file.Files.createTempFile(…)</code> instead of
-					<code>java.io.File.createTempFile(…)</code>.
-				</li>
-				<li>
-					<code>null</code> is now accepted for <code>tmpDir</code>, which will use the system temp
-					directory.
-				</li>
-				<li>
-					The system temp directory will now be created when missing.
-					When already present, some sanity checks are now performed to ensure it is a readable and
-					writable directory.
-				</li>
-				<li>Added support for temporary directories, which are recursively deleted.</li>
-				<li>Removed finalizers.  Applications are expected to generally close via try-with-resources.</li>
-				<li>Temp name prefixes are now truncated to 64 characters.</li>
-				<li>
-					New method <code>TempFileContext.generatePrefix(String)</code> for creating safe prefixes from
-					arbitrary, possibly untrusted sources.
-				</li>
-				<li>
-					<code>TempFileContext.createTempFile(String)</code> now maintains filename extension as a suffix,
-					as long as all characters are in <code>[a-zA-Z0-9_]</code>.
-				</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="2.0.0"
+      datePublished="2020-11-17T13:50:37-06:00"
+      groupId="com.aoindustries"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>
+          Temporary files are now created with more secure default permissions by using
+          <code>java.nio.file.Files.createTempFile(…)</code> instead of
+          <code>java.io.File.createTempFile(…)</code>.
+        </li>
+        <li>
+          <code>null</code> is now accepted for <code>tmpDir</code>, which will use the system temp
+          directory.
+        </li>
+        <li>
+          The system temp directory will now be created when missing.
+          When already present, some sanity checks are now performed to ensure it is a readable and
+          writable directory.
+        </li>
+        <li>Added support for temporary directories, which are recursively deleted.</li>
+        <li>Removed finalizers.  Applications are expected to generally close via try-with-resources.</li>
+        <li>Temp name prefixes are now truncated to 64 characters.</li>
+        <li>
+          New method <code>TempFileContext.generatePrefix(String)</code> for creating safe prefixes from
+          arbitrary, possibly untrusted sources.
+        </li>
+        <li>
+          <code>TempFileContext.createTempFile(String)</code> now maintains filename extension as a suffix,
+          as long as all characters are in <code>[a-zA-Z0-9_]</code>.
+        </li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.0.2"
-			datePublished="2020-03-23T22:51:39-05:00"
-			groupId="com.aoindustries"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Minimum Java version changed from 1.7 to 1.8.</li>
-				<li>
-					Reduced use of property substitutions in <code>pom.xml</code>.
-					This is to help 3rd-party parsers that fail to perform full Maven-compatible substitutions.
-				</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.0.2"
+      datePublished="2020-03-23T22:51:39-05:00"
+      groupId="com.aoindustries"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Minimum Java version changed from 1.7 to 1.8.</li>
+        <li>
+          Reduced use of property substitutions in <code>pom.xml</code>.
+          This is to help 3rd-party parsers that fail to perform full Maven-compatible substitutions.
+        </li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.0.1"
-			datePublished="2019-06-19T05:41:53-05:00"
-			groupId="com.aoindustries"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Updated version of <core:link book="/parent" page="/index.jspx" />.</li>
-				<li>Using managed dependencies:
-					<ol>
-						<li>This project uses managed dependencies.</li>
-						<li>This project's managed dependencies may also be imported by other projects.</li>
-					</ol>
-				</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.0.1"
+      datePublished="2019-06-19T05:41:53-05:00"
+      groupId="com.aoindustries"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Updated version of <core:link book="/parent" page="/index.jspx" />.</li>
+        <li>Using managed dependencies:
+          <ol>
+            <li>This project uses managed dependencies.</li>
+            <li>This project's managed dependencies may also be imported by other projects.</li>
+          </ol>
+        </li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.0.0"
-			datePublished="2019-04-18T05:05:35-05:00"
-			groupId="com.aoindustries"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>New microproject for managing temp files.</li>
-			</ul>
-		</changelog:release>
-	</core:page>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.0.0"
+      datePublished="2019-04-18T05:05:35-05:00"
+      groupId="com.aoindustries"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>New microproject for managing temp files.</li>
+      </ul>
+    </changelog:release>
+  </core:page>
 </jsp:root>

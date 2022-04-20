@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 ao-tempfiles - Java temporary file API filling-in JDK gaps and deficiencies.
-Copyright (C) 2017, 2019, 2020, 2021  AO Industries, Inc.
+Copyright (C) 2017, 2019, 2020, 2021, 2022  AO Industries, Inc.
     support@aoindustries.com
     7262 Bull Pen Cir
     Mobile, AL 36695
@@ -22,88 +22,88 @@ You should have received a copy of the GNU Lesser General Public License
 along with ao-tempfiles.  If not, see <https://www.gnu.org/licenses/>.
 -->
 <jsp:root
-	xmlns:ao="https://oss.aoapps.com/taglib/"
-	xmlns:core="https://semanticcms.com/core/taglib/"
-	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:section="https://semanticcms.com/section/taglib/"
-	version="2.1"
+  xmlns:ao="https://oss.aoapps.com/taglib/"
+  xmlns:core="https://semanticcms.com/core/taglib/"
+  xmlns:jsp="http://java.sun.com/JSP/Page"
+  xmlns:section="https://semanticcms.com/section/taglib/"
+  version="2.1"
 >
-	<jsp:directive.page language="java" pageEncoding="UTF-8" />
-	<jsp:directive.page session="false" />
-	<core:page
-		title="@{documented.name}"
-		description="@{documented.description}"
-		datePublished="2017-08-06T17:54:05-05:00"
-		dateModified="2021-07-16T03:48:08-05:00"
-	>
-		<core:child page="changelog.jspx" />
-		<core:child page="apidocs/index.jspx" />
-		<core:child book="/tempfiles/servlet" page="/index.jspx" />
-		<header>
-			<ao:include
-				page="/ao-badges/badges.inc.jspx"
-				arg.projectStatus="current-stable"
-				arg.managementStatus="production"
-				arg.packagingStatus="active"
-				arg.javaseVersion="@{documented.javase.version}"
-				arg.semanticVersioning="2.0.0"
-				arg.license="lgpl-3.0"
-				arg.scmUrl="@{project.scm.url}"
-				arg.githubBuildWorkflow="Build"
-				arg.mavenBadge="maven-central"
-				arg.groupId="@{project.groupId}"
-				arg.artifactId="@{documented.artifactId}"
-				arg.sonarQualityGate="true"
-				arg.sonarLinesOfCode="true"
-				arg.sonarReliability="true"
-				arg.sonarSecurity="true"
-				arg.sonarMaintainability="true"
-				arg.sonarCoverage="true"
-			/>
-		</header>
-		<p>
-			@{documented.description}
-		</p>
-		<section:nav label="Project Links">
-			<ul>
-				<li><core:link page="index.jspx">Project Home</core:link></li>
-				<li><core:link page="changelog.jspx">Changelog</core:link></li>
-				<li><core:link page="apidocs/index.jspx">API Docs</core:link></li>
-				<li><ao:a href="https://search.maven.org/artifact/${ao:encodeURIComponent('@{project.groupId}')}/${ao:encodeURIComponent('@{documented.artifactId}')}">Maven Central Repository</ao:a></li>
-				<li><ao:a href="@{project.scm.url}">GitHub</ao:a></li>
-			</ul>
-		</section:nav>
-		<section:section label="Modules">
-			<ul>
-				<li><core:link book="/tempfiles/servlet" page="/index.jspx" /></li>
-			</ul>
-		</section:section>
-		<section:section label="Features">
-			<ul>
-				<li>Small and simple API for dealing with temporary files.</li>
-				<li>Small footprint, self-contained, no transitive dependencies - not part of a big monolithic package.</li>
-				<li>Java 1.8 implementation:
-					<ul>
-						<li>Android compatible.</li>
-					</ul>
-				</li>
-			</ul>
-		</section:section>
-		<section:section label="Motivation">
-			<p>
-				The Java language has a long-term and <ao:a href="https://stackoverflow.com/questions/40119188/memory-leak-on-deleteonexithook">well-documented</ao:a>
-				memory leak when using <ao:a rel="nofollow" href="@{javadoc.link.javase}java/io/File.html#deleteOnExit()">File.deleteOnExit()</ao:a>.
-				The <ao:a href="https://bugs.openjdk.java.net/browse/JDK-4872014">bug report</ao:a> has been open for 14 years as of the time of this writing.
-			</p>
-			<p>
-				We desire to not have to choose between a memory leak and garbage files possibly left behind on shutdown, thus this API was born.
-			</p>
-		</section:section>
-		<section:aside label="Alternatives">
-			<p>
-				There may be functionality that is also found in other projects.  Please let us know if you find a small, clean, focused alternative.
-				We always love to cure ignorance - especially our own.
-			</p>
-		</section:aside>
-	</core:page>
+  <jsp:directive.page language="java" pageEncoding="UTF-8" />
+  <jsp:directive.page session="false" />
+  <core:page
+    title="@{documented.name}"
+    description="@{documented.description}"
+    datePublished="2017-08-06T17:54:05-05:00"
+    dateModified="2021-07-16T03:48:08-05:00"
+  >
+    <core:child page="changelog.jspx" />
+    <core:child page="apidocs/index.jspx" />
+    <core:child book="/tempfiles/servlet" page="/index.jspx" />
+    <header>
+      <ao:include
+        page="/ao-badges/badges.inc.jspx"
+        arg.projectStatus="current-stable"
+        arg.managementStatus="production"
+        arg.packagingStatus="active"
+        arg.javaseVersion="@{documented.javase.version}"
+        arg.semanticVersioning="2.0.0"
+        arg.license="lgpl-3.0"
+        arg.scmUrl="@{project.scm.url}"
+        arg.githubBuildWorkflow="Build"
+        arg.mavenBadge="maven-central"
+        arg.groupId="@{project.groupId}"
+        arg.artifactId="@{documented.artifactId}"
+        arg.sonarQualityGate="true"
+        arg.sonarLinesOfCode="true"
+        arg.sonarReliability="true"
+        arg.sonarSecurity="true"
+        arg.sonarMaintainability="true"
+        arg.sonarCoverage="true"
+      />
+    </header>
+    <p>
+      @{documented.description}
+    </p>
+    <section:nav label="Project Links">
+      <ul>
+        <li><core:link page="index.jspx">Project Home</core:link></li>
+        <li><core:link page="changelog.jspx">Changelog</core:link></li>
+        <li><core:link page="apidocs/index.jspx">API Docs</core:link></li>
+        <li><ao:a href="https://search.maven.org/artifact/${ao:encodeURIComponent('@{project.groupId}')}/${ao:encodeURIComponent('@{documented.artifactId}')}">Maven Central Repository</ao:a></li>
+        <li><ao:a href="@{project.scm.url}">GitHub</ao:a></li>
+      </ul>
+    </section:nav>
+    <section:section label="Modules">
+      <ul>
+        <li><core:link book="/tempfiles/servlet" page="/index.jspx" /></li>
+      </ul>
+    </section:section>
+    <section:section label="Features">
+      <ul>
+        <li>Small and simple API for dealing with temporary files.</li>
+        <li>Small footprint, self-contained, no transitive dependencies - not part of a big monolithic package.</li>
+        <li>Java 1.8 implementation:
+          <ul>
+            <li>Android compatible.</li>
+          </ul>
+        </li>
+      </ul>
+    </section:section>
+    <section:section label="Motivation">
+      <p>
+        The Java language has a long-term and <ao:a href="https://stackoverflow.com/questions/40119188/memory-leak-on-deleteonexithook">well-documented</ao:a>
+        memory leak when using <ao:a rel="nofollow" href="@{javadoc.link.javase}java/io/File.html#deleteOnExit()">File.deleteOnExit()</ao:a>.
+        The <ao:a href="https://bugs.openjdk.java.net/browse/JDK-4872014">bug report</ao:a> has been open for 14 years as of the time of this writing.
+      </p>
+      <p>
+        We desire to not have to choose between a memory leak and garbage files possibly left behind on shutdown, thus this API was born.
+      </p>
+    </section:section>
+    <section:aside label="Alternatives">
+      <p>
+        There may be functionality that is also found in other projects.  Please let us know if you find a small, clean, focused alternative.
+        We always love to cure ignorance - especially our own.
+      </p>
+    </section:aside>
+  </core:page>
 </jsp:root>

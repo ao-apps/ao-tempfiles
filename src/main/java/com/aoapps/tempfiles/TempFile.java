@@ -43,69 +43,73 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class TempFile implements Closeable {
 
-	private final Long contextId;
-	private final AtomicReference<File> file;
-	private final boolean isDirectory;
+  private final Long contextId;
+  private final AtomicReference<File> file;
+  private final boolean isDirectory;
 
-	TempFile(Long contextId, File file, boolean isDirectory) {
-		this.contextId = contextId;
-		this.file = new AtomicReference<>(file);
-		this.isDirectory = isDirectory;
-	}
+  TempFile(Long contextId, File file, boolean isDirectory) {
+    this.contextId = contextId;
+    this.file = new AtomicReference<>(file);
+    this.isDirectory = isDirectory;
+  }
 
-	/**
-	 * Gets the temporary file.
-	 *
-	 * @throws  IllegalStateException  when already closed
-	 */
-	public File getFile() throws IllegalStateException {
-		File f = file.get();
-		if(f == null) throw new IllegalStateException("Temp file closed");
-		return f;
-	}
+  /**
+   * Gets the temporary file.
+   *
+   * @throws  IllegalStateException  when already closed
+   */
+  public File getFile() throws IllegalStateException {
+    File f = file.get();
+    if (f == null) {
+      throw new IllegalStateException("Temp file closed");
+    }
+    return f;
+  }
 
-	// TODO: This could use FileUtils from either ao-lang or commons-io, at the cost of a new dependency
-	//
-	// Note: This is copied from FileUtils to avoid dependency
-	static void deleteRecursive(File file) throws IOException {
-		Path deleteMe = file.toPath();
-		Files.walkFileTree(
-			deleteMe,
-			// Java 9: new SimpleFileVisitor<>
-			new SimpleFileVisitor<Path>() {
-				@Override
-				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-					Files.delete(file);
-					return FileVisitResult.CONTINUE;
-				}
-				@Override
-				public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-					if(exc != null) throw exc;
-					Files.delete(dir);
-					return FileVisitResult.CONTINUE;
-				}
-			}
-		);
-		assert !Files.exists(deleteMe, LinkOption.NOFOLLOW_LINKS);
-	}
+  // TODO: This could use FileUtils from either ao-lang or commons-io, at the cost of a new dependency
+  //
+  // Note: This is copied from FileUtils to avoid dependency
+  static void deleteRecursive(File file) throws IOException {
+    Path deleteMe = file.toPath();
+    Files.walkFileTree(
+      deleteMe,
+      // Java 9: new SimpleFileVisitor<>
+      new SimpleFileVisitor<Path>() {
+        @Override
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+          Files.delete(file);
+          return FileVisitResult.CONTINUE;
+        }
+        @Override
+        public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+          if (exc != null) {
+            throw exc;
+          }
+          Files.delete(dir);
+          return FileVisitResult.CONTINUE;
+        }
+      }
+    );
+    assert !Files.exists(deleteMe, LinkOption.NOFOLLOW_LINKS);
+  }
 
-	/**
-	 * Closes the temporary file, de-registering from delete on exit and deleting
-	 * the underlying file.
-	 */
-	@Override
-	public void close() throws IOException {
-		File f = file.getAndSet(null);
-		if(f != null) {
-			// De-register from shutdown hook
-			TempFileContext.removeDeleteOnExit(contextId, f.getName());
-			if(f.exists()) {
-				if(isDirectory) {
-					deleteRecursive(f);
-				} else {
-					Files.delete(f.toPath());
-				}
-			}
-		}
-	}
+  /**
+   * Closes the temporary file, de-registering from delete on exit and deleting
+   * the underlying file.
+   */
+  @Override
+  public void close() throws IOException {
+    File f = file.getAndSet(null);
+    if (f != null) {
+      // De-register from shutdown hook
+      TempFileContext.removeDeleteOnExit(contextId, f.getName());
+      if (f.exists()) {
+        if (isDirectory) {
+          deleteRecursive(f);
+        } else {
+          Files.delete(f.toPath());
+        }
+      }
+    }
+  }
 }
