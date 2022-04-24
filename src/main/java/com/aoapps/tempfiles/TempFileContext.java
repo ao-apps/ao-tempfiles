@@ -73,6 +73,7 @@ public class TempFileContext implements Closeable {
   private static class DeleteMe {
     private final File file;
     private final boolean isDirectory;
+
     private DeleteMe(File file, boolean isDirectory) {
       this.file = file;
       this.isDirectory = isDirectory;
@@ -93,6 +94,7 @@ public class TempFileContext implements Closeable {
   private static volatile Thread shutdownHook;
 
   private static final AtomicReference<File> systemTmpDir = new AtomicReference<>();
+
   private static File getSystemTmpDir() {
     File tmpDir = systemTmpDir.get();
     if (tmpDir == null) {
@@ -245,7 +247,7 @@ public class TempFileContext implements Closeable {
    * @see  #TempFileContext(java.io.File)
    */
   public TempFileContext() {
-    this((File)null);
+    this((File) null);
   }
 
   /**
@@ -276,14 +278,14 @@ public class TempFileContext implements Closeable {
       for (int i = 0; i < len; i++) {
         char ch = template.charAt(i);
         prefix.append(
-          (ch >= 'a' && ch <= 'z')
-          || (ch >= 'A' && ch <= 'Z')
-          || (ch >= '0' && ch <= '9')
-          || ch == '.'
-          || ch == '-'
-          || ch == '_'
-          ? ch
-          : '_'
+            (ch >= 'a' && ch <= 'z')
+                || (ch >= 'A' && ch <= 'Z')
+                || (ch >= '0' && ch <= '9')
+                || ch == '.'
+                || ch == '-'
+                || ch == '_'
+                ? ch
+                : '_'
         );
       }
       while (prefix.length() < MIN_PREFIX_LENGTH) {
@@ -405,10 +407,10 @@ public class TempFileContext implements Closeable {
           }
           lastDot = i;
         } else if (
-          (ch < 'a' || ch > 'z')
-          && (ch < 'A' || ch > 'Z')
-          && (ch < '0' || ch > '9')
-          && ch != '_'
+            (ch < 'a' || ch > 'z')
+                && (ch < 'A' || ch > 'Z')
+                && (ch < '0' || ch > '9')
+                && ch != '_'
         ) {
           // End on unsupported character
           break;

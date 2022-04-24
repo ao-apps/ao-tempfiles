@@ -72,23 +72,23 @@ public class TempFile implements Closeable {
   static void deleteRecursive(File file) throws IOException {
     Path deleteMe = file.toPath();
     Files.walkFileTree(
-      deleteMe,
-      // Java 9: new SimpleFileVisitor<>
-      new SimpleFileVisitor<Path>() {
-        @Override
-        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-          Files.delete(file);
-          return FileVisitResult.CONTINUE;
-        }
-        @Override
-        public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-          if (exc != null) {
-            throw exc;
+        deleteMe,
+        // Java 9: new SimpleFileVisitor<>
+        new SimpleFileVisitor<Path>() {
+          @Override
+          public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+            Files.delete(file);
+            return FileVisitResult.CONTINUE;
           }
-          Files.delete(dir);
-          return FileVisitResult.CONTINUE;
+          @Override
+          public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+            if (exc != null) {
+              throw exc;
+            }
+            Files.delete(dir);
+            return FileVisitResult.CONTINUE;
+          }
         }
-      }
     );
     assert !Files.exists(deleteMe, LinkOption.NOFOLLOW_LINKS);
   }
