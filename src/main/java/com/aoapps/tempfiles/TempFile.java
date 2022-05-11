@@ -80,6 +80,7 @@ public class TempFile implements Closeable {
             Files.delete(file);
             return FileVisitResult.CONTINUE;
           }
+
           @Override
           public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
             if (exc != null) {

@@ -61,7 +61,7 @@ public class TempFileContext implements Closeable {
   private static final int MIN_PREFIX_LENGTH = 3;
 
   /**
-   * Any prefix longer than this will be truncated
+   * Any prefix longer than this will be truncated.
    */
   private static final int MAX_PREFIX_LENGTH = 64;
 
@@ -437,6 +437,8 @@ public class TempFileContext implements Closeable {
   }
 
   /**
+   * Registers delete-on-exit for the given ID and name.
+   *
    * @return  {@code true} when added or {@code false} when name already tracked within the id
    */
   private static boolean addDeleteOnExit(Long id, File tmpFile, boolean isDirectory) {
@@ -454,6 +456,8 @@ public class TempFileContext implements Closeable {
   }
 
   /**
+   * Deregisters delete-on-exit for the given ID and name.
+   *
    * @see  TempFile#close()
    */
   static void removeDeleteOnExit(Long id, String name) {
@@ -496,7 +500,6 @@ public class TempFileContext implements Closeable {
   public void close() throws IOException {
     boolean alreadyClosed = closed.getAndSet(true);
     if (!alreadyClosed) {
-      Map<String, DeleteMe> deleteMap = deleteOnExits.remove(id);
       assert activeCount.get() > 0;
       int newActiveCount = activeCount.decrementAndGet();
       if (logger.isLoggable(Level.FINER)) {
@@ -520,6 +523,7 @@ public class TempFileContext implements Closeable {
         }
       }
       // Delete own temp files
+      Map<String, DeleteMe> deleteMap = deleteOnExits.remove(id);
       if (deleteMap != null) {
         List<DeleteMe> failedDelete = null;
         List<Throwable> causes = null;
