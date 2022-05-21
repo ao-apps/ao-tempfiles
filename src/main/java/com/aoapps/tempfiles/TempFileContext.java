@@ -109,9 +109,6 @@ public class TempFileContext implements Closeable {
           }
         } else {
           // Sanity check
-          if (!tmpDir.exists()) {
-            throw new UncheckedIOException(new IOException("System temp directory does not exist: " + tmpDir));
-          }
           if (!tmpDir.isDirectory()) {
             throw new UncheckedIOException(new IOException("System temp directory is not a directory: " + tmpDir));
           }
