@@ -26,7 +26,6 @@ package com.aoapps.tempfiles;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -38,7 +37,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -93,38 +91,47 @@ public class TempFileContext implements Closeable {
    */
   private static volatile Thread shutdownHook;
 
-  private static final AtomicReference<File> systemTmpDir = new AtomicReference<>();
+  private static final Object systemTmpDirLock = new Object();
+  private static File systemTmpDir = null;
+  private static boolean systemTmpDirSet = false;
 
+  /**
+   * Gets the system directory or {@code null} when unknown.
+   */
   private static File getSystemTmpDir() {
-    File tmpDir = systemTmpDir.get();
-    if (tmpDir == null) {
-      tmpDir = new File(System.getProperty("java.io.tmpdir"));
-      if (systemTmpDir.compareAndSet(null, tmpDir)) {
-        // Create if does not exist
-        if (!tmpDir.exists()) {
-          try {
-            Files.createDirectories(tmpDir.toPath());
-          } catch (IOException e) {
-            throw new UncheckedIOException("System temp directory does not exist and cannot be created: " + tmpDir, e);
+    synchronized (systemTmpDirLock) {
+      if (!systemTmpDirSet) {
+        try {
+          File tmpDir = new File(System.getProperty("java.io.tmpdir"));
+          // Create if does not exist
+          if (!tmpDir.exists()) {
+            try {
+              logger.log(Level.INFO, "Creating missing system temp directory: {0}", tmpDir);
+              Files.createDirectories(tmpDir.toPath());
+            } catch (IOException e) {
+              if (logger.isLoggable(Level.SEVERE)) {
+                logger.log(Level.SEVERE, "System temp directory does not exist and cannot be created: " + tmpDir, e);
+              }
+            }
+          } else if (!tmpDir.isDirectory() && logger.isLoggable(Level.WARNING)) {
+            logger.log(Level.WARNING, "System temp directory is not a directory: " + tmpDir);
           }
-        } else {
           // Sanity check
-          if (!tmpDir.isDirectory()) {
-            throw new UncheckedIOException(new IOException("System temp directory is not a directory: " + tmpDir));
+          if (!tmpDir.canWrite() && logger.isLoggable(Level.WARNING)) {
+            logger.log(Level.WARNING, "System temp directory is not writable: " + tmpDir);
           }
-          if (!tmpDir.canWrite()) {
-            throw new UncheckedIOException(new IOException("System temp directory is not writable: " + tmpDir));
+          if (!tmpDir.canRead() && logger.isLoggable(Level.WARNING)) {
+            logger.log(Level.WARNING, "System temp directory is not readable: " + tmpDir);
           }
-          if (!tmpDir.canRead()) {
-            throw new UncheckedIOException(new IOException("System temp directory is not readable: " + tmpDir));
-          }
+          systemTmpDir = tmpDir;
+        } catch (SecurityException e) {
+          logger.log(Level.FINE, "Using default system temp directory without sanity checks", e);
+          systemTmpDir = null;
         }
-      } else {
-        // Another thread already set
-        tmpDir = systemTmpDir.get();
+        systemTmpDirSet = true;
       }
+      return systemTmpDir;
     }
-    return tmpDir;
   }
 
   /**
@@ -248,7 +255,7 @@ public class TempFileContext implements Closeable {
   }
 
   /**
-   * Gets the temporary directory this instance is using.
+   * Gets the temporary directory this instance is using, which may be {@code null} when using the system directory.
    */
   public File getTmpDir() {
     return tmpDir;
@@ -327,7 +334,9 @@ public class TempFileContext implements Closeable {
       throw new IllegalStateException("TempFiles is closed");
     }
     while (true) {
-      Path tmpPath = Files.createTempDirectory(tmpDir.toPath(), formatPrefix(prefix));
+      Path tmpPath = (tmpDir == null)
+          ? Files.createTempDirectory(formatPrefix(prefix))
+          : Files.createTempDirectory(tmpDir.toPath(), formatPrefix(prefix));
       File tmpFile = tmpPath.toFile();
       if (addDeleteOnExit(id, tmpFile, true)) {
         return new TempFile(id, tmpFile, true);
@@ -361,7 +370,9 @@ public class TempFileContext implements Closeable {
       throw new IllegalStateException("TempFiles is closed");
     }
     while (true) {
-      Path tmpPath = Files.createTempFile(tmpDir.toPath(), formatPrefix(prefix), suffix);
+      Path tmpPath = (tmpDir == null)
+          ? Files.createTempFile(formatPrefix(prefix), suffix)
+          : Files.createTempFile(tmpDir.toPath(), formatPrefix(prefix), suffix);
       File tmpFile = tmpPath.toFile();
       if (addDeleteOnExit(id, tmpFile, false)) {
         return new TempFile(id, tmpFile, false);
