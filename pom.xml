@@ -29,7 +29,7 @@ along with ao-tempfiles.  If not, see <https://www.gnu.org/licenses/>.
     <relativePath>../parent/pom.xml</relativePath>
   </parent>
 
-  <groupId>com.aoapps</groupId><artifactId>ao-tempfiles</artifactId><version>3.0.1-SNAPSHOT</version>
+  <groupId>com.aoapps</groupId><artifactId>ao-tempfiles</artifactId><version>3.0.1</version>
   <packaging>bundle</packaging>
 
   <properties>
@@ -89,7 +89,7 @@ along with ao-tempfiles.  If not, see <https://www.gnu.org/licenses/>.
     <connection>scm:git:git://github.com/ao-apps/ao-tempfiles.git</connection>
     <developerConnection>scm:git:git@github.com:ao-apps/ao-tempfiles.git</developerConnection>
     <url>https://github.com/ao-apps/ao-tempfiles</url>
-    <tag>HEAD</tag>
+    <tag>ao-tempfiles-3.0.1</tag>
   </scm>
 
   <issueManagement>
