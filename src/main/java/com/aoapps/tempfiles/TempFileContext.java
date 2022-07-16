@@ -197,10 +197,8 @@ public class TempFileContext implements Closeable {
     }
     if (newActiveCount == 1) {
       // Create shutdown hook on first only
-      if (logger.isLoggable(Level.FINE)) {
-        logger.log(Level.FINE, "Registering shutdown hook");
-      }
-      shutdownHook = new Thread(() -> {
+      logger.log(Level.FINE, "Registering shutdown hook");
+      Thread newShutdownHook = new Thread(() -> {
         for (Map<String, DeleteMe> deleteMap : deleteOnExits.values()) {
           synchronized (deleteMap) {
             for (DeleteMe deleteMe : deleteMap.values()) {
@@ -224,12 +222,15 @@ public class TempFileContext implements Closeable {
         }
       });
       try {
-        Runtime.getRuntime().addShutdownHook(shutdownHook);
-      } catch (IllegalArgumentException | IllegalStateException | SecurityException e) {
-        if (logger.isLoggable(Level.WARNING)) {
-          logger.log(Level.WARNING, "Failed to add shutdown hook", e);
-        }
+        Runtime.getRuntime().addShutdownHook(newShutdownHook);
+      } catch (IllegalArgumentException | IllegalStateException e) {
+        logger.log(Level.WARNING, "Failed to add shutdown hook", e);
+        newShutdownHook = null;
+      } catch (SecurityException e) {
+        logger.log(Level.FINE, "Shutdown hook not allowed", e);
+        newShutdownHook = null;
       }
+      shutdownHook = newShutdownHook;
     }
   }
 
@@ -517,17 +518,13 @@ public class TempFileContext implements Closeable {
         Thread hook = shutdownHook;
         assert hook != null;
         shutdownHook = null;
-        if (logger.isLoggable(Level.FINE)) {
-          logger.log(Level.FINE, "Removing shutdown hook");
-        }
+        logger.log(Level.FINE, "Removing shutdown hook");
         try {
           Runtime.getRuntime().removeShutdownHook(hook);
         } catch (IllegalStateException e) {
           // System shutting down, can't remove hook
         } catch (SecurityException e) {
-          if (logger.isLoggable(Level.WARNING)) {
-            logger.log(Level.WARNING, "Failed to removing shutdown hook", e);
-          }
+          logger.log(Level.WARNING, "Failed to remove shutdown hook", e);
         }
       }
       // Delete own temp files
