@@ -22,7 +22,7 @@ Java temporary file API filling-in JDK gaps and deficiencies.
 * [Project Home](https://oss.aoapps.com/tempfiles/)
 * [Changelog](https://oss.aoapps.com/tempfiles/changelog)
 * [API Docs](https://oss.aoapps.com/tempfiles/apidocs/)
-* [Maven Central Repository](https://search.maven.org/artifact/com.aoapps/ao-tempfiles)
+* [Maven Central Repository](https://central.sonatype.com/search?namespace=com.aoapps&q=a%3Aao-tempfiles)
 * [GitHub](https://github.com/ao-apps/ao-tempfiles)
 
 ## Modules
