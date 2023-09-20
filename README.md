@@ -35,7 +35,7 @@ Java temporary file API filling-in JDK gaps and deficiencies.
     * Android compatible.
 
 ## Motivation
-The Java language has a long-term and [well-documented](https://stackoverflow.com/questions/40119188/memory-leak-on-deleteonexithook) memory leak when using [File.deleteOnExit()](https://docs.oracle.com/javase/7/docs/api/java/io/File.html#deleteOnExit()).  The [bug report](https://bugs.openjdk.java.net/browse/JDK-4872014) has been open for 14 years as of the time of this writing.
+The Java language has a long-term and [well-documented](https://stackoverflow.com/questions/40119188/memory-leak-on-deleteonexithook) memory leak when using [File.deleteOnExit()](https://docs.oracle.com/javase/7/docs/api/java/io/File.html#deleteOnExit()).  The [bug report](https://bugs.openjdk.org/browse/JDK-4872014) has been open for 14 years as of the time of this writing.
 
 We desire to not have to choose between a memory leak and garbage files possibly left behind on shutdown, thus this API was born.
 

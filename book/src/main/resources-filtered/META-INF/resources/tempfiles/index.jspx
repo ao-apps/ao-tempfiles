@@ -34,7 +34,7 @@ along with ao-tempfiles.  If not, see <https://www.gnu.org/licenses/>.
     title="@{documented.name}"
     description="@{documented.description}"
     datePublished="2017-08-06T17:54:05-05:00"
-    dateModified="2023-04-14T16:43:04Z"
+    dateModified="2023-09-20T16:47:30Z"
   >
     <core:child page="changelog.jspx" />
     <core:child page="apidocs/index.jspx" />
@@ -93,7 +93,7 @@ along with ao-tempfiles.  If not, see <https://www.gnu.org/licenses/>.
       <p>
         The Java language has a long-term and <ao:a href="https://stackoverflow.com/questions/40119188/memory-leak-on-deleteonexithook">well-documented</ao:a>
         memory leak when using <ao:a rel="nofollow" href="@{javadoc.link.javase}java/io/File.html#deleteOnExit()">File.deleteOnExit()</ao:a>.
-        The <ao:a href="https://bugs.openjdk.java.net/browse/JDK-4872014">bug report</ao:a> has been open for 14 years as of the time of this writing.
+        The <ao:a href="https://bugs.openjdk.org/browse/JDK-4872014">bug report</ao:a> has been open for 14 years as of the time of this writing.
       </p>
       <p>
         We desire to not have to choose between a memory leak and garbage files possibly left behind on shutdown, thus this API was born.
