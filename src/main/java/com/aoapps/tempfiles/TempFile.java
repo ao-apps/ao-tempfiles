@@ -1,6 +1,6 @@
 /*
  * ao-tempfiles - Java temporary file API filling-in JDK gaps and deficiencies.
- * Copyright (C) 2017, 2019, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2017, 2019, 2021, 2022, 2024  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -37,9 +37,8 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * A temporary file that is deleted when {@link #close() closed} or when its
  * associated {@link TempFileContext} is {@link TempFileContext#close() closed}.
- * <p>
- * Thread-safe with fine-grained locking.
- * </p>
+ *
+ * <p>Thread-safe with fine-grained locking.</p>
  */
 public class TempFile implements Closeable {
 

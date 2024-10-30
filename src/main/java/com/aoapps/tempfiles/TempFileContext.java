@@ -1,6 +1,6 @@
 /*
  * ao-tempfiles - Java temporary file API filling-in JDK gaps and deficiencies.
- * Copyright (C) 2017, 2018, 2019, 2020, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2017, 2018, 2019, 2020, 2021, 2022, 2024  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -45,9 +45,8 @@ import java.util.logging.Logger;
  * The temporary files are optionally deleted on shutdown using shutdown hooks.
  * The shutdown-registered temporary files are also immediately deleted when
  * the last instance is closed.
- * <p>
- * Thread-safe with fine-grained locking.
- * </p>
+ *
+ * <p>Thread-safe with fine-grained locking.</p>
  */
 public class TempFileContext implements Closeable {
 
@@ -80,9 +79,8 @@ public class TempFileContext implements Closeable {
 
   /**
    * The files registered for delete on exit.
-   * <p>
-   * Note: The key is an incrementing Long to avoid a reference to the specific instance.
-   * </p>
+   *
+   * <p>Note: The key is an incrementing Long to avoid a reference to the specific instance.</p>
    */
   private static final ConcurrentMap<Long, Map<String, DeleteMe>> deleteOnExits = new ConcurrentHashMap<>();
 
@@ -155,14 +153,11 @@ public class TempFileContext implements Closeable {
   private final AtomicBoolean closed = new AtomicBoolean();
 
   /**
-   * <p>
    * Create a new instance of the temp file manager.  {@link #close()} must be called
    * when done with the instance.  This should be done in a try-with-resources, try-finally, or strong
    * equivalent, such as <code>Servlet.destroy()</code>.
-   * </p>
-   * <p>
-   * Shutdown hooks are shared between instances.
-   * </p>
+   *
+   * <p>Shutdown hooks are shared between instances.</p>
    *
    * @param  tmpDir  The temporary directory or {@code null} to use the system default
    *
@@ -384,17 +379,14 @@ public class TempFileContext implements Closeable {
 
   /**
    * Creates a new temporary file based on the given name, deleting on close or exit.
-   * <p>
-   * When the file contains a dot ('.') followed by only the characters in {@code [a-zA-Z0-9_]}, and the dot is not
+   *
+   * <p>When the file contains a dot ('.') followed by only the characters in {@code [a-zA-Z0-9_]}, and the dot is not
    * the first character, it is used as the temp file suffix (to maintain file type by extension).  Multiple
-   * extensions are supported, such as used by {@code "filename.tar.gz"}.
-   * </p>
-   * <p>
-   * When the suffix is removed from the name, the prefix is followed by an underscore ('_') separator.
-   * </p>
-   * <p>
-   * When no automatic suffix is determine, defaults to {@code ".tmp"}.
-   * </p>
+   * extensions are supported, such as used by {@code "filename.tar.gz"}.</p>
+   *
+   * <p>When the suffix is removed from the name, the prefix is followed by an underscore ('_') separator.</p>
+   *
+   * <p>When no automatic suffix is determine, defaults to {@code ".tmp"}.</p>
    *
    * @throws  IllegalStateException  if already {@link #close() closed}
    */
@@ -493,16 +485,12 @@ public class TempFileContext implements Closeable {
   }
 
   /**
-   * <p>
    * Closes this instance.  Once closed, no additional temp files may be managed.
    * Any overriding method must call super.close().
-   * </p>
-   * <p>
-   * If this is the last active instance, the underlying shutdown hook is also removed.
-   * </p>
-   * <p>
-   * If already closed, no action will be taken and no exception thrown.
-   * </p>
+   *
+   * <p>If this is the last active instance, the underlying shutdown hook is also removed.</p>
+   *
+   * <p>If already closed, no action will be taken and no exception thrown.</p>
    */
   @Override
   @SuppressWarnings({"UseSpecificCatch", "TooBroadCatch"})
