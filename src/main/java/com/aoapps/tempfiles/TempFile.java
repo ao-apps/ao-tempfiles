@@ -1,6 +1,6 @@
 /*
  * ao-tempfiles - Java temporary file API filling-in JDK gaps and deficiencies.
- * Copyright (C) 2017, 2019, 2021, 2022, 2024  AO Industries, Inc.
+ * Copyright (C) 2017, 2019, 2021, 2022, 2024, 2025  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -72,8 +72,7 @@ public class TempFile implements Closeable {
     Path deleteMe = file.toPath();
     Files.walkFileTree(
         deleteMe,
-        // Java 9: new SimpleFileVisitor<>
-        new SimpleFileVisitor<Path>() {
+        new SimpleFileVisitor<>() {
           @Override
           public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
             Files.delete(file);

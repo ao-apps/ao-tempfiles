@@ -31,7 +31,7 @@ Java temporary file API filling-in JDK gaps and deficiencies.
 ## Features
 * Small and simple API for dealing with temporary files.
 * Small footprint, self-contained, no transitive dependencies - not part of a big monolithic package.
-* Java 1.8 implementation:
+* Java 11 implementation:
     * Android compatible.
 
 ## Motivation

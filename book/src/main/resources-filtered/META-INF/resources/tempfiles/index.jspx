@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 ao-tempfiles - Java temporary file API filling-in JDK gaps and deficiencies.
-Copyright (C) 2017, 2019, 2020, 2021, 2022, 2023  AO Industries, Inc.
+Copyright (C) 2017, 2019, 2020, 2021, 2022, 2023, 2025  AO Industries, Inc.
     support@aoindustries.com
     7262 Bull Pen Cir
     Mobile, AL 36695
@@ -34,7 +34,7 @@ along with ao-tempfiles.  If not, see <https://www.gnu.org/licenses/>.
     title="@{documented.name}"
     description="@{documented.description}"
     datePublished="2017-08-06T17:54:05-05:00"
-    dateModified="2023-09-20T16:47:30Z"
+    dateModified="2025-02-12T02:29:49Z"
   >
     <core:child page="changelog.jspx" />
     <core:child page="apidocs/index.jspx" />
@@ -82,7 +82,7 @@ along with ao-tempfiles.  If not, see <https://www.gnu.org/licenses/>.
       <ul>
         <li>Small and simple API for dealing with temporary files.</li>
         <li>Small footprint, self-contained, no transitive dependencies - not part of a big monolithic package.</li>
-        <li>Java 1.8 implementation:
+        <li>Java 11 implementation:
           <ul>
             <li>Android compatible.</li>
           </ul>
