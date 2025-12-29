@@ -34,7 +34,7 @@ along with ao-tempfiles.  If not, see <https://www.gnu.org/licenses/>.
     title="@{documented.name}"
     description="@{documented.description}"
     datePublished="2017-08-06T17:54:05-05:00"
-    dateModified="2025-07-02T23:05:45Z"
+    dateModified="2025-12-27T21:16:29Z"
   >
     <core:child page="changelog.jspx" />
     <core:child page="apidocs/index.jspx" />
@@ -83,11 +83,6 @@ along with ao-tempfiles.  If not, see <https://www.gnu.org/licenses/>.
       <ul>
         <li>Small and simple API for dealing with temporary files.</li>
         <li>Small footprint, self-contained, no transitive dependencies - not part of a big monolithic package.</li>
-        <li>Java 11 implementation:
-          <ul>
-            <li>Android compatible.</li>
-          </ul>
-        </li>
       </ul>
     </section:section>
     <section:section label="Motivation">

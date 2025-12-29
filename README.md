@@ -31,8 +31,6 @@ Java temporary file API filling-in JDK gaps and deficiencies.
 ## Features
 * Small and simple API for dealing with temporary files.
 * Small footprint, self-contained, no transitive dependencies - not part of a big monolithic package.
-* Java 11 implementation:
-    * Android compatible.
 
 ## Motivation
 The Java language has a long-term and [well-documented](https://stackoverflow.com/questions/40119188/memory-leak-on-deleteonexithook) memory leak when using [File.deleteOnExit()](https://docs.oracle.com/javase/7/docs/api/java/io/File.html#deleteOnExit()).  The [bug report](https://bugs.openjdk.org/browse/JDK-4872014) has been open for 14 years as of the time of this writing.
