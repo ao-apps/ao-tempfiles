@@ -153,7 +153,7 @@ public class TempFileContext implements Closeable {
   private final AtomicBoolean closed = new AtomicBoolean();
 
   /**
-   * Create a new instance of the temp file manager.  {@link #close()} must be called
+   * Create a new instance of the temp file manager.  {@link TempFileContext#close()} must be called
    * when done with the instance.  This should be done in a try-with-resources, try-finally, or strong
    * equivalent, such as <code>Servlet.destroy()</code>.
    *
@@ -161,7 +161,7 @@ public class TempFileContext implements Closeable {
    *
    * @param  tmpDir  The temporary directory or {@code null} to use the system default
    *
-   * @see  #close()
+   * @see  TempFileContext#close()
    */
   @SuppressWarnings({"UseSpecificCatch", "TooBroadCatch"})
   public TempFileContext(File tmpDir) {
@@ -234,7 +234,7 @@ public class TempFileContext implements Closeable {
    *
    * @param  tmpDir  The temporary directory or {@code null} to use the system default
    *
-   * @see  #TempFileContext(java.io.File)
+   * @see  TempFileContext#TempFileContext(java.io.File)
    */
   public TempFileContext(String tmpDir) {
     this((tmpDir == null) ? null : new File(tmpDir));
@@ -243,8 +243,8 @@ public class TempFileContext implements Closeable {
   /**
    * Uses the system default temporary directory from {@link System#getProperty(java.lang.String) system property} {@code "java.io.tmpdir"}.
    *
-   * @see  #getSystemTmpDir()
-   * @see  #TempFileContext(java.io.File)
+   * @see  TempFileContext#getSystemTmpDir()
+   * @see  TempFileContext#TempFileContext(java.io.File)
    */
   public TempFileContext() {
     this((File) null);
@@ -262,8 +262,8 @@ public class TempFileContext implements Closeable {
    * <ol>
    * <li>If {@code null} or {@link String#isEmpty()}, {@code "tmp_"} is used.</li>
    * <li>Any character that is not in {@code [a-zA-Z0-9.-_]} is converted to {@code '_'}.</li>
-   * <li>If less than {@link #MIN_PREFIX_LENGTH}, padded with trailing {@code '_'} to a length of {@link #MIN_PREFIX_LENGTH}.</li>
-   * <li>If greater than {@link #MAX_PREFIX_LENGTH} characters, is truncated to a length of {@link #MAX_PREFIX_LENGTH}.</li>
+   * <li>If less than {@link TempFileContext#MIN_PREFIX_LENGTH}, padded with trailing {@code '_'} to a length of {@link TempFileContext#MIN_PREFIX_LENGTH}.</li>
+   * <li>If greater than {@link TempFileContext#MAX_PREFIX_LENGTH} characters, is truncated to a length of {@link TempFileContext#MAX_PREFIX_LENGTH}.</li>
    * </ol>
    *
    * @param  template  the name of the temporary file that will be filtered for only safe characters
@@ -320,10 +320,10 @@ public class TempFileContext implements Closeable {
    * Creates a new temporary directory with the given prefix, recursively deleting on close or exit.
    *
    * @param  prefix  If {@code null} or {@link String#isEmpty()}, {@code "tmp_"} is used.
-   *                 If less than {@link #MIN_PREFIX_LENGTH}, padded with trailing {@code '_'} to a length of {@link #MIN_PREFIX_LENGTH}.
-   *                 If greater than {@link #MAX_PREFIX_LENGTH} characters, is truncated to a length of {@link #MAX_PREFIX_LENGTH}.
+   *                 If less than {@link TempFileContext#MIN_PREFIX_LENGTH}, padded with trailing {@code '_'} to a length of {@link TempFileContext#MIN_PREFIX_LENGTH}.
+   *                 If greater than {@link TempFileContext#MAX_PREFIX_LENGTH} characters, is truncated to a length of {@link TempFileContext#MAX_PREFIX_LENGTH}.
    *
-   * @throws  IllegalStateException  if already {@link #close() closed}
+   * @throws  IllegalStateException  if already {@link TempFileContext#close() closed}
    */
   public TempFile createTempDirectory(String prefix) throws IllegalStateException, IOException {
     if (closed.get()) {
@@ -344,7 +344,7 @@ public class TempFileContext implements Closeable {
   /**
    * Creates a new temporary directory with default prefix, recursively deleting on close or exit.
    *
-   * @throws  IllegalStateException  if already {@link #close() closed}
+   * @throws  IllegalStateException  if already {@link TempFileContext#close() closed}
    */
   public TempFile createTempDirectory() throws IllegalStateException, IOException {
     return createTempDirectory(null);
@@ -354,12 +354,12 @@ public class TempFileContext implements Closeable {
    * Creates a new temporary file with the given prefix and suffix, deleting on close or exit.
    *
    * @param  prefix  If {@code null} or {@link String#isEmpty()}, {@code "tmp_"} is used.
-   *                 If less than {@link #MIN_PREFIX_LENGTH}, padded with trailing {@code '_'} to a length of {@link #MIN_PREFIX_LENGTH}.
-   *                 If greater than {@link #MAX_PREFIX_LENGTH} characters, is truncated to a length of {@link #MAX_PREFIX_LENGTH}.
+   *                 If less than {@link TempFileContext#MIN_PREFIX_LENGTH}, padded with trailing {@code '_'} to a length of {@link TempFileContext#MIN_PREFIX_LENGTH}.
+   *                 If greater than {@link TempFileContext#MAX_PREFIX_LENGTH} characters, is truncated to a length of {@link TempFileContext#MAX_PREFIX_LENGTH}.
    *
    * @param  suffix  when {@code null}, {@code ".tmp"} is used.
    *
-   * @throws  IllegalStateException  if already {@link #close() closed}
+   * @throws  IllegalStateException  if already {@link TempFileContext#close() closed}
    */
   public TempFile createTempFile(String prefix, String suffix) throws IllegalStateException, IOException {
     if (closed.get()) {
@@ -388,7 +388,7 @@ public class TempFileContext implements Closeable {
    *
    * <p>When no automatic suffix is determine, defaults to {@code ".tmp"}.</p>
    *
-   * @throws  IllegalStateException  if already {@link #close() closed}
+   * @throws  IllegalStateException  if already {@link TempFileContext#close() closed}
    */
   public TempFile createTempFile(String name) throws IllegalStateException, IOException {
     String prefix;
@@ -431,7 +431,7 @@ public class TempFileContext implements Closeable {
   /**
    * Creates a new temporary file with default prefix and suffix, deleting on close or exit.
    *
-   * @throws  IllegalStateException  if already {@link #close() closed}
+   * @throws  IllegalStateException  if already {@link TempFileContext#close() closed}
    */
   public TempFile createTempFile() throws IllegalStateException, IOException {
     return createTempFile(null, null);
