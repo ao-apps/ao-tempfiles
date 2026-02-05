@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 ao-tempfiles - Java temporary file API filling-in JDK gaps and deficiencies.
-Copyright (C) 2017, 2019, 2020, 2021, 2022, 2023, 2025  AO Industries, Inc.
+Copyright (C) 2017, 2019, 2020, 2021, 2022, 2023, 2025, 2026  AO Industries, Inc.
     support@aoindustries.com
     7262 Bull Pen Cir
     Mobile, AL 36695
@@ -34,7 +34,7 @@ along with ao-tempfiles.  If not, see <https://www.gnu.org/licenses/>.
     title="@{documented.name}"
     description="@{documented.description}"
     datePublished="2017-08-06T17:54:05-05:00"
-    dateModified="2025-12-27T21:16:29Z"
+    dateModified="2026-02-05T18:09:30Z"
   >
     <core:child page="changelog.jspx" />
     <core:child page="apidocs/index.jspx" />
@@ -88,7 +88,7 @@ along with ao-tempfiles.  If not, see <https://www.gnu.org/licenses/>.
     <section:section label="Motivation">
       <p>
         The Java language has a long-term and <ao:a href="https://stackoverflow.com/questions/40119188/memory-leak-on-deleteonexithook">well-documented</ao:a>
-        memory leak when using <ao:a rel="nofollow" href="@{javadoc.link.javase}java/io/File.html#deleteOnExit()">File.deleteOnExit()</ao:a>.
+        memory leak when using <ao:a rel="nofollow" href="@{javadoc.link.javase}java.base/java/io/File.html#deleteOnExit()">File.deleteOnExit()</ao:a>.
         The <ao:a href="https://bugs.openjdk.org/browse/JDK-4872014">bug report</ao:a> has been open for 14 years as of the time of this writing.
       </p>
       <p>
